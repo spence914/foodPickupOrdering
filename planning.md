@@ -37,4 +37,7 @@ get '/orders/:orderID' view cart as is (pull from cookies if they exist, otherwi
 
 post '/orders/:orderID' create sql statement to add order to orders table, make api request to send notification to restaurant
 
-post '/orders/:orderID/timeToComplete' create sql statement for owner to add time_to_complete to orders table.
+post '/orders/:orderID/timeToComplete'
+create sql statement for owner to add/ update time_to_complete to orders table.
+send sms to client to notify their order is being prepared
+send sms to client to notify their order is ready
