@@ -11,6 +11,9 @@ As an owner I want to organize the menu according to food type because I want us
 As an owner I want to notify the users of the estiamated wait time
 
 
+
+** Routes:
+
 get '/' view main page of website / menu
 
 <!-- // do this instead
@@ -27,4 +30,7 @@ app.get('/login/:id', (req, res) => {
 
 get '/orders/:userID'
 
-post '/
+When user adds item to cart it is stored in their cookies:
+    req.session.order = {}
+
+get '/orders/:orderID' view cart as is (pull from cookies if they exist, otherwise display error for user)
