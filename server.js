@@ -44,9 +44,30 @@ app.use('/users', usersRoutes);
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
 
+// when user adds to cart store the information in the cookie
+
+// HOME PAGE
 app.get('/', (req, res) => {
   res.render('index');
 });
+
+// ORDER HISTORY
+app.get('/orders/:userID', (req, res) => {
+  //  Check if the user is logged in
+  //  Populate from SQL orders for userID
+  res.render('orders');
+});
+
+// VIEW CART
+app.get('/orders/:orderID', (req, res) => {
+  // Check if the user is logged in
+  // Populate currentOrder object from cookie data
+  res.render('cart', currentOrder);
+});
+
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
