@@ -34,3 +34,5 @@ When user adds item to cart it is stored in their cookies:
     req.session.order = {}
 
 get '/orders/:orderID' view cart as is (pull from cookies if they exist, otherwise display error for user)
+
+post '/orders/:orderID' create sql statement to add order to orders table, make api request to send notification to restaurant
