@@ -31,6 +31,14 @@ app.use(express.static('public'));
 const userApiRoutes = require('./routes/users-api');
 const widgetApiRoutes = require('./routes/widgets-api');
 const usersRoutes = require('./routes/users');
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'session',
+  keys: ['testkey1'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
@@ -65,8 +73,30 @@ app.get('/orders/:orderID', (req, res) => {
   res.render('cart', currentOrder);
 });
 
+// USER LOGIN
+app.get('/login/:id', (req, res) => {
+  // using encrypted cookies
+  req.session.user_id = req.params.id;
 
+  // or using plain-text cookies
+  res.cookie('user_id', req.params.id);
 
+  // send the user somewhere
+  res.redirect('/');
+});
+
+app.post('/order/:orderID', (req, res) => {
+  // create sql statement to add order to orders table
+  // make api request to send notification to restaurant
+  res.redirect('orders/:userID');
+});
+
+app.post('/orders/:orderID/timeToComplete', (req, res) => {
+  // create sql statement for owner to add/update time_to_complete to orders table.
+  // send sms to client to notify their order is being prepared
+  // start a timer that sends an sms to the client when completed
+  res.redirect('orders/:userID');
+});
 
 
 app.listen(PORT, () => {

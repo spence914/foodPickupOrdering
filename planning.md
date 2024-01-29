@@ -28,7 +28,7 @@ app.get('/login/:id', (req, res) => {
   res.redirect('/');
 }); -->
 
-get '/orders/:userID'
+get '/orders/:userID' view all orders for a user
 
 When user adds item to cart it is stored in their cookies:
     req.session.order = {}
