@@ -7,4 +7,6 @@ const getUsers = () => {
     });
 };
 
+// getOrders function => grab all order historical order listing for given userID, order by most recent
+
 module.exports = { getUsers };
