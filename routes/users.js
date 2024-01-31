@@ -9,11 +9,12 @@ const express = require('express');
 const router  = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('users');
-});
-
-router.get('/', (req, res) => {
-  res.render('index');
+  const foodItems = {};
+  // get list of food items from db
+  // create html to display food items
+  // render index with the chosen items
+  res.render('index', foodItems);
+  // res.send('<html><body>Please log in to view your shortened URLs</body></html>');
 });
 
 // ORDER HISTORY
