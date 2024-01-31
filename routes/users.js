@@ -7,14 +7,17 @@
 
 const express = require('express');
 const router  = express.Router();
+const db = require('../db/connection');
+const { Template } = require('ejs');
 
 router.get('/', (req, res) => {
-  const foodItems = {};
-  // get list of food items from db
-  // create html to display food items
-  // render index with the chosen items
-  res.render('index', foodItems);
-  // res.send('<html><body>Please log in to view your shortened URLs</body></html>');
+  const queryString = `
+  SELECT id, name, description, (price/100) as price FROM food_items;
+  `;
+
+  db.query(queryString)
+    .then((data) => res.render('index', {foodItems: data.rows}));
+  
 });
 
 // ORDER HISTORY
