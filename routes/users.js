@@ -8,9 +8,9 @@
 const express = require('express');
 const router  = express.Router();
 
-router.get('/', (req, res) => {
-  res.render('users');
-});
+// router.get('/', (req, res) => {
+//   res.render('users');
+// });
 
 router.get('/', (req, res) => {
   res.render('index');
@@ -27,7 +27,7 @@ router.get('/orders/:userID', (req, res) => {
 router.get('/orders/:orderID', (req, res) => {
   // Check if the user is logged in
   // Populate currentOrder object from cookie data
-  // 
+  //
   res.render('cart', currentOrder);
 });
 
