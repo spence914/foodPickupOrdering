@@ -11,7 +11,7 @@ const getUsers = () => {
 const getOrders = (orderId) => {
 
   const queryString = `
-  SELECT name, price, thumbnail_photo_url, description
+  SELECT name, price, thumbnail_photo_url, description, order_contents.quantity
   FROM food_items
   JOIN order_contents on (food_items.id = order_contents.food_item_id)
   JOIN orders on (order_contents.order_id = orders.id)
@@ -27,7 +27,7 @@ const getOrders = (orderId) => {
     });
 };
 
-getOrders(1).then((data) => {
-  console.log(data);
-})
-module.exports = { getUsers };
+module.exports = {
+  getUsers,
+  getOrders
+};
