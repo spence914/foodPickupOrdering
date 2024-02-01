@@ -28,11 +28,17 @@ router.get('/orders/:userID', (req, res) => {
 });
 
 // VIEW CART
-router.get('/orders/:orderID', (req, res) => {
+router.get('/orders', (req, res) => {
+  const queryString = `
+  SELECT id, name, description, (price/100) as price FROM food_items;
+  `;
+
+  db.query(queryString)
+    .then((data) => res.render('cart', {foodItems: data.rows}));
   // Check if the user is logged in
   // Populate currentOrder object from cookie data
   //
-  res.render('cart', currentOrder);
+  // res.render('cart');
 });
 
 // USER LOGIN
@@ -58,6 +64,11 @@ router.post('/orders/:orderID/timeToComplete', (req, res) => {
   // send sms to client to notify their order is being prepared
   // start a timer that sends an sms to the client when completed
   res.redirect('orders/:userID');
+});
+
+router.post('/test', (req, res) => {
+  console.log("req", req.body);
+  res.render('index');
 });
 
 module.exports = router;
