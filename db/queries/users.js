@@ -43,10 +43,24 @@ const getOrders = (orderId) => {
     });
 };
 
-// delete current cart order
+// delete the whole current cart order
 const cancelCartOrder = (orderId) => {
-  
-}
+
+  const queryString = `
+    DELETE FROM orders
+    WHERE id = $1
+    RETURNING *;
+  `;
+
+  return db.query(queryString, [orderId])
+    .then((data) => {
+      return data.rows;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+
+};
 
 // This is for spencer's ORDER HISTORY, get /orders/:userID
 const getOrderHistory = (userID) => {
@@ -68,5 +82,6 @@ module.exports = {
   getUsers,
   getAllFoodItems,
   getOrders,
+  cancelCartOrder,
   getOrderHistory
 };
