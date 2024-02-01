@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Cart</title>
+  <title>Orders</title>
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,6 +27,7 @@
         <div class="allUsersOrders">
           <div class="order">
             <p class="orderID">Order # <%= order.id %> </p>
+            <p class="totalPrice">Order Total: $<%= order.total_price %></p>
             <p class="timestamp">Order Placed: <%= order.created_at %></p>
             <p class="status">Status: <%= order.status %></p>
           </div>

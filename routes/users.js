@@ -25,7 +25,23 @@ router.get('/orders/:userID', (req, res) => {
   //  Check if the user is logged in
   //  Populate from SQL orders for userID
   const userID = req.cookies.user_id;
-  const queryString = `SELECT id, created_at, status FROM orders WHERE user_id = $1;`;
+  const queryString = `SELECT
+  orders.id,
+  orders.created_at,
+  orders.status,
+  SUM(order_contents.quantity * food_items.price)/100 AS total_price
+FROM
+  orders
+JOIN
+  order_contents ON orders.id = order_contents.order_id
+JOIN
+  food_items ON food_items.id = order_contents.food_item_id
+WHERE
+  orders.user_id = $1
+GROUP BY
+  orders.id;`;
+
+
 
   db.query(queryString, [userID])
     .then((data) => res.render('orders', { orders: data.rows }));
