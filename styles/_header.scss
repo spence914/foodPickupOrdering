@@ -4,10 +4,11 @@ header {
   background-color: yellow;
   position: fixed;
   top: 0;
-  width: 100vh;
 
   nav {
-    
+    display: flex;
+    flex-direction: row;
+    width: 100vh;
   }
 }
 
