@@ -12,12 +12,11 @@ header {
     flex-direction: row;
     width: 100vw;
     justify-content: space-between;
-.header_right {
-  i {
-    padding-right: 10px;
+
+    .header_right {
+      i {
+        padding-right: 10px;
+      }
+    }
   }
 }
-  }
-}
-
-
