@@ -7,6 +7,22 @@ const getUsers = () => {
     });
 };
 
+// getAllFoodItems function
+const getAllFoodItems = () => {
+  const queryString = `
+  SELECT id, name, description, (price/100) as price
+  FROM food_items;
+  `;
+
+  return db.query(queryString)
+    .then((data) => {
+      return data.rows;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
 // getOrders function => grab all order historical order listing for given userID, order by most recent
 const getOrders = (orderId) => {
 
@@ -45,6 +61,7 @@ const getOrderHistory = (userID) => {
 
 module.exports = {
   getUsers,
+  getAllFoodItems,
   getOrders,
   getOrderHistory
 };

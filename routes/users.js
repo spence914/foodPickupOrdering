@@ -18,7 +18,6 @@ router.get('/', (req, res) => {
 
   db.query(queryString)
     .then((data) => res.render('index', {foodItems: data.rows}));
-
 });
 
 // ORDER HISTORY
@@ -32,7 +31,7 @@ router.get('/orders/:userID', (req, res) => {
 router.get('/cart/:orderId', (req, res) => {
   // const user = req.cookies.user_id;
   const orderId = req.params.orderId || 1;
-  
+
   userQueries.getOrders(orderId)
     .then((data) => {
       const templateVars = { foodItems : data };
