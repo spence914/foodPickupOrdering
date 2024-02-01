@@ -23,6 +23,16 @@ body {
     .menu_item {
       display: flex;
       flex-direction: row;
+      align-items: center;
+      padding-top: 10px;
+    }
+    .body_item_left{
+      display: flex;
+      img {
+        width: auto;
+        height: 250px;
+        margin-right: 10px;
+      }
     }
     .body_item_center{
       display: flex;
@@ -36,7 +46,10 @@ body {
     .body_item_right{
 
       margin-left: 100px;
-
+      input{
+        height: 50px;
+        width: 50px;
+      }
     }
   }
 }
