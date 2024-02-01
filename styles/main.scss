@@ -16,3 +16,40 @@ body {
     rgba(163, 208, 219, 1) 100%
   );
 }
+
+.foodItem {
+  display: flex;
+  background-color: antiquewhite;
+  width: 80vw;
+  flex-direction: row;
+  justify-content: space-between;
+
+  margin: 10px;
+  padding: 10px;
+
+  img {
+    height: 90px;
+    padding: 5px;
+  }
+
+  #foodDisplay {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .foodInformation {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+  }
+
+  form {
+    align-self: center;
+  }
+
+  input {
+    width: 45px;
+  }
+
+}
