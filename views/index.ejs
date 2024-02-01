@@ -18,10 +18,22 @@
   <script src="/vendor/jquery-3.0.0.js"></script>
   <script defer src="/scripts/app.js"></script>
 </head>
-<%- include('partials/_header') %>
 
 <body>
-  <h1>Have fun! 🥔</h1>
+  <%- include('partials/_header') %>
+  <div class="menu_item">
+    <img>
+    <div class="body_item_center">
+      <div class="item_title_price"><h2>Title </h2>
+          <p>$Price</p>
+      </div>
+      <div class="item_description"><p>Description</p></div>
+    </div>
+    <div class="body_item_right">
+      <input>
+      <button>Add</button>
+    </div>
+  </div>
 </body>
 
 </html>
