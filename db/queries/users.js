@@ -23,11 +23,28 @@ const getOrders = (orderId) => {
       return data.rows;
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err.message);
     });
+};
+
+// This is for spencer's ORDER HISTORY, get /orders/:userID
+const getOrderHistory = (userID) => {
+  const queryString = `
+  SELECT id, created_at, status FROM orders WHERE user_id = $1;
+  `;
+
+  return db.query(queryString, [userID])
+    .then((data) => {
+      return data.rows;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+
 };
 
 module.exports = {
   getUsers,
-  getOrders
+  getOrders,
+  getOrderHistory
 };
