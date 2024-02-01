@@ -21,30 +21,55 @@ router.get('/', (req, res) => {
 });
 
 // ORDER HISTORY
-router.get('/orders/:userID', (req, res) => {
-  //  Check if the user is logged in
-  //  Populate from SQL orders for userID
+router.get('/orders', (req, res) => {
   const userID = req.cookies.user_id;
+
+
   const queryString = `SELECT
-  orders.id,
-  orders.created_at,
-  orders.status,
-  SUM(order_contents.quantity * food_items.price)/100 AS total_price
-FROM
-  orders
-JOIN
-  order_contents ON orders.id = order_contents.order_id
-JOIN
-  food_items ON food_items.id = order_contents.food_item_id
-WHERE
-  orders.user_id = $1
-GROUP BY
-  orders.id;`;
-
-
+    orders.id,
+    orders.created_at,
+    orders.status,
+    SUM(order_contents.quantity * food_items.price)/100 AS total_price
+  FROM
+    orders
+  JOIN
+    order_contents ON orders.id = order_contents.order_id
+  JOIN
+    food_items ON food_items.id = order_contents.food_item_id
+  WHERE
+    orders.user_id = $1
+  GROUP BY
+    orders.id;`;
 
   db.query(queryString, [userID])
-    .then((data) => res.render('orders', { orders: data.rows }));
+    .then(orderData => {
+      const orders = orderData.rows;
+      // Map each order to a promise that fetches its items
+      const itemPromises = orders.map(order => {
+        const itemQuery = `SELECT
+          food_items.name,
+          order_contents.quantity,
+          food_items.price/100 AS price
+        FROM
+          order_contents
+        JOIN
+          food_items ON food_items.id = order_contents.food_item_id
+        WHERE
+          order_contents.order_id = $1;`;
+
+        return db.query(itemQuery, [order.id]).then(itemData => {
+          order.items = itemData.rows; // Assign the fetched items to the order
+          return order; // Return the updated order
+        });
+      });
+
+      // Wait for all item fetches to complete
+      return Promise.all(itemPromises);
+    })
+    .then(ordersWithItems => {
+      // after all orders have been populated with items, ready to render
+      res.render('orders', { orders: ordersWithItems });
+    });
 
 });
 
