@@ -1,13 +1,23 @@
 <header>
   <nav>
     <div class="header_left">
-      <i class="fa-solid fa-house"></i>
+      <a href="/"><i class="fa-solid fa-house"></i></a>
     </div>
     <div class="header_title">Restaurant</div>
     <div class="header_right">
-      <i class="fa-solid fa-right-to-bracket"></i>
-      <i class="fa-solid fa-list"></i>
-      <i class="fa-solid fa-cart-shopping"></i>
+      <i class="fa-solid fa-right-to-bracket" id="loginButton"></i>
+     <a href="/orders/:userID"> <i class="fa-solid fa-list"></i></a>
+      <a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a>
     </div>
   </nav>
 </header>
+
+
+<script>
+  document.getElementById('loginButton').addEventListener('click', function() {
+    const userID = prompt("Please enter your User ID:");
+    if (userID) {
+      window.location.href = `/login/${userID}`;
+    }
+  });
+  </script>

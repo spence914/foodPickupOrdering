@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Home Page</title>
+  <title>Cart</title>
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,24 +22,17 @@
 <body>
   <%- include('partials/_header') %>
     <main>
-      <!-- FOOD ITEMS LIST -->
-      <% for (let item of foodItems) { %>
-        <div class="foodItem">
-          <div id="foodDisplay">
-            <img src="<%= item.thumbnail_photo_url %>"/>
-            <div id ="foodInformation">
-              <p><%= item.name %> $<%= item.price %></p>
-              <p class="foodItemDescription"><%= item.description %></p>
-            </div>
+
+      <% for (let order of orders) { %>
+        <div class="allUsersOrders">
+          <div class="order">
+            <p class="orderID">Order # <%= order.id %> </p>
+            <p class="timestamp">Order Placed: <%= order.created_at %></p>
+            <p class="status">Status: <%= order.status %></p>
           </div>
-          <form action="/test" method="POST">
-            <input type="number" id="quantity" name="quantity" step="1" min="1"/>
-            <input id="foodID" name="<%= item.id %>" />
-            <button type="submit">Add to Cart</button>
-          </form>
         </div>
-      <% } %>
-      <!-- END OF FOOD ITEMS LIST -->
+        <% } %>
+
     </main>
 </body>
 
