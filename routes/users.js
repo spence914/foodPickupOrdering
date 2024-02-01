@@ -34,7 +34,7 @@ router.get('/cart/:orderId', (req, res) => {
 
   userQueries.getOrders(orderId)
     .then((data) => {
-      const templateVars = { foodItems : data };
+      const templateVars = { foodItems : data, orderId : orderId };
       res.render('cart', templateVars);
     });
 });
