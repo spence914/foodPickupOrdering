@@ -23,16 +23,28 @@
   <%- include('partials/_header') %>
     <main>
 
-      <% for (let order of orders) { %>
-        <div class="allUsersOrders">
-          <div class="order">
-            <p class="orderID">Order # <%= order.id %> </p>
-            <p class="totalPrice">Order Total: $<%= order.total_price %></p>
-            <p class="timestamp">Order Placed: <%= order.created_at %></p>
-            <p class="status">Status: <%= order.status %></p>
-          </div>
+ <% for (let order of orders) { %>
+  <div class="allUsersOrders">
+    <div class="order">
+      <p class="orderID">Order # <%= order.id %> </p>
+      <p class="timestamp">Order Placed: <%= order.created_at %></p>
+      <p class="status">Status: <%= order.status %></p>
+
+      <!-- Display items for each order -->
+      <div class="orderItems">
+        <h4>Items:</h4>
+        <ul>
+          <% order.items.forEach(function(item) { %>
+            <li>
+              <%= item.name %> - Quantity: <%= item.quantity %>, Price: $<%= item.price %>
+            </li>
+            <% }); %>
+          </ul>
         </div>
-        <% } %>
+        <p class="totalPrice">Order Total: $<%= order.total_price %></p>
+    </div>
+  </div>
+<% } %>
 
     </main>
 </body>
