@@ -6,45 +6,47 @@
  */
 
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const db = require('../db/connection');
 const { Template } = require('ejs');
 
 router.get('/', (req, res) => {
   const queryString = `
-  SELECT id, name, description, (price/100) as price FROM food_items;
+  SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
   `;
 
   db.query(queryString)
-    .then((data) => res.render('index', {foodItems: data.rows}));
-  
+    .then((data) => res.render('index', { foodItems: data.rows }));
+
 });
 
 // ORDER HISTORY
 router.get('/orders/:userID', (req, res) => {
   //  Check if the user is logged in
   //  Populate from SQL orders for userID
-  res.render('orders');
+  const userID = req.cookies.user_id;
+  const queryString = `SELECT id, created_at, status FROM orders WHERE user_id = $1;`;
+
+  db.query(queryString, [userID])
+    .then((data) => res.render('orders', { orders: data.rows }));
+
 });
 
 // VIEW CART
-router.get('/orders', (req, res) => {
+router.get('/cart', (req, res) => {
   const queryString = `
-  SELECT id, name, description, (price/100) as price FROM food_items;
+  SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
   `;
 
   db.query(queryString)
-    .then((data) => res.render('cart', {foodItems: data.rows}));
-  // Check if the user is logged in
-  // Populate currentOrder object from cookie data
-  //
-  // res.render('cart');
+    .then((data) => res.render('cart', { foodItems: data.rows }));
+
 });
 
 // USER LOGIN
 router.get('/login/:id', (req, res) => {
   // using encrypted cookies
-  req.session.user_id = req.params.id;
+  //req.session.user_id = req.params.id;
 
   // or using plain-text cookies
   res.cookie('user_id', req.params.id);
