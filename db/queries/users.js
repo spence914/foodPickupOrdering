@@ -43,6 +43,11 @@ const getOrders = (orderId) => {
     });
 };
 
+// delete current cart order
+const cancelCartOrder = (orderId) => {
+  
+}
+
 // This is for spencer's ORDER HISTORY, get /orders/:userID
 const getOrderHistory = (userID) => {
   const queryString = `
