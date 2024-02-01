@@ -25,7 +25,6 @@ const getAllFoodItems = () => {
 
 // getOrders function => grab all order historical order listing for given userID, order by most recent
 const getOrders = (orderId) => {
-
   const queryString = `
   SELECT name, price, thumbnail_photo_url, description, order_contents.quantity
   FROM food_items
@@ -45,7 +44,6 @@ const getOrders = (orderId) => {
 
 // delete the whole current cart order
 const cancelCartOrder = (orderId) => {
-
   const queryString = `
     DELETE FROM orders
     WHERE id = $1
@@ -59,7 +57,6 @@ const cancelCartOrder = (orderId) => {
     .catch((err) => {
       console.log(err.message);
     });
-
 };
 
 // This is for spencer's ORDER HISTORY, get /orders/:userID
@@ -75,7 +72,6 @@ const getOrderHistory = (userID) => {
     .catch((err) => {
       console.log(err.message);
     });
-
 };
 
 module.exports = {
