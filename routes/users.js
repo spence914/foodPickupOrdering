@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 
   db.query(queryString)
     .then((data) => res.render('index', {foodItems: data.rows}));
-  
+
 });
 
 // ORDER HISTORY
@@ -28,16 +28,11 @@ router.get('/orders/:userID', (req, res) => {
 });
 
 // VIEW CART
-router.get('/orders', (req, res) => {
-  const queryString = `
-  SELECT id, name, description, (price/100) as price FROM food_items;
-  `;
+router.get('/orders/:orderId', (req, res) => {
+  const user = req.session.userId;
+  const orderId = req.params.orderId || 1;
 
-  db.query(queryString)
-    .then((data) => res.render('cart', {foodItems: data.rows}));
-  // Check if the user is logged in
-  // Populate currentOrder object from cookie data
-  //
+  
   // res.render('cart');
 });
 
