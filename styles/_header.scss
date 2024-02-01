@@ -1,0 +1,22 @@
+header {
+  display: flex;
+  flex-direction: row;
+  background-color: aliceblue;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 20px;
+
+  nav {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    justify-content: space-between;
+
+    .header_right {
+      i {
+        padding-right: 10px;
+      }
+    }
+  }
+}
