@@ -15,4 +15,28 @@ body {
     rgba(163, 208, 219, 1) 74%,
     rgba(163, 208, 219, 1) 100%
   );
+
+  main {
+    display: flex;
+    flex-direction: column;
+
+    .menu_item {
+      display: flex;
+      flex-direction: row;
+    }
+    .body_item_center{
+      display: flex;
+      flex-direction: column;
+      .item_title_price{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+    .body_item_right{
+
+      margin-left: 100px;
+
+    }
+  }
 }
