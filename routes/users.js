@@ -9,6 +9,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/connection');
 const { Template } = require('ejs');
+const userQueries = require('../db/queries/users');
 
 router.get('/', (req, res) => {
   const queryString = `
@@ -74,14 +75,15 @@ router.get('/orders', (req, res) => {
 });
 
 // VIEW CART
-router.get('/cart', (req, res) => {
-  const queryString = `
-  SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
-  `;
+router.get('/cart/:orderId', (req, res) => {
+  // const user = req.cookies.user_id;
+  const orderId = req.params.orderId || 1;
 
-  db.query(queryString)
-    .then((data) => res.render('cart', { foodItems: data.rows }));
-
+  userQueries.getOrders(orderId)
+    .then((data) => {
+      const templateVars = { foodItems : data, orderId : orderId };
+      res.render('cart', templateVars);
+    });
 });
 
 // USER LOGIN

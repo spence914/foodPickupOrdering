@@ -33,7 +33,7 @@
               <p class="foodItemDescription"><%= item.description %></p>
             </div>
           </div>
-          <form action="/order/:orderID" method="POST">
+          <form action="/order/<%= orderId %>" method="POST">
             <input type="number" id="quantity" name="quantity" step="1" min="1"/>
             <button type="submit">Update</button>
             <button type="submit">Remove</button>
@@ -41,7 +41,14 @@
         </div>
       <% } %>
       <!-- END OF FOOD ITEMS LIST -->
-
+        <div class="confirmation_bar">
+          <form action="/users/cancelOrder/<%= orderId %>" method="POST">
+            <button type="submit">CANCEL</button>
+          </form>
+          <form action="/users/submitOrder/<%= orderId %>" method="POST">
+            <button type="submit">SUBMIT</button>
+          </form>
+        </div>
     </main>
 </body>
 
