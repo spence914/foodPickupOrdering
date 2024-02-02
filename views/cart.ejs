@@ -34,8 +34,9 @@
             </div>
           </div>
           <div class="editCart">
-            <input type="number" id="quantity" name="quantity" value="<%= item.quantity %>" step="1" min="1"/>
-            <form action="/order/<%= orderID %>" method="POST">
+            <form action="/updateQuantity/<%= orderID %>" method="POST">
+              <input type="number" id="quantity" name="quantity" value="<%= item.quantity %>" step="1" min="1"/>
+              <input type="hidden" name="order_contents_id" value="<%= item.order_contentsid %>"/>
               <button type="submit">Update</button>
             </form>
             <form action="/removeFoodItem/<%= orderID%>" method="POST">
