@@ -95,37 +95,24 @@ router.get('/orders', (req, res) => {
     })
     .then(ordersWithItems => {
       // after all orders have been populated with items, ready to render
+
       res.render('orders', { orders: ordersWithItems });
     });
 
 });
 
 // VIEW CART
-router.get('/cart/:orderId', (req, res) => {
+router.get('/cart/:orderID', (req, res) => {
   // const user = req.cookies.user_id;
-  const orderId = req.params.orderId || 1;
-  console.log(orderId);
-  userQueries.getOrders(orderId)
+  const orderID = req.params.orderID || 1;
+
+  console.log(orderID);
+  userQueries.getOrders(orderID)
     .then((data) => {
-      const templateVars = { foodItems : data, orderId : orderId };
+      const templateVars = { foodItems : data, orderID : orderID };
       console.log('fooditems', templateVars.foodItems);
       res.render('cart', templateVars);
     });
-});
-
-router.get('/orders', (req, res) => {
-  const orderID = 101;
-  
-  const queryString = `
-  SELECT id, name, description, (price/100) as price FROM food_items;
-  `;
-
-  db.query(queryString)
-    .then((data) => res.render('cart', {foodItems: data.rows}));
-  // Check if the user is logged in
-  // Populate currentOrder object from cookie data
-  //
-  // res.render('cart');
 });
 
 // USER LOGIN
