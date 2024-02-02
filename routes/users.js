@@ -25,26 +25,25 @@ router.get('/', (req, res) => {
   SELECT id, name, description, (price/100) as price FROM food_items;
   `;
 
-  const userID = 7;
+  const userID = 6; // replace hard coded userID
 
-  let currentOrderID;
-
-  db.query(queryCurrentOrder, [userID])  //  replace 1 with userID
+  db.query(queryCurrentOrder, [userID])
     .then((data) => {
-      console.log(data.rows[0]);
       if (!data.rows[0]) {
         //  no current order exists
-        console.log("creating new order");
+        console.log("Creating new order");
         return db.query(queryCreateNewOrder, [userID])
           .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
       //  current order exists
       return data;
     })
-    .then((data) => console.log(data.rows));
-
-  // db.query(queryString)
-  //   .then((data) => res.render('index', {foodItems: data.rows}));
+    .then((data) => {
+      const orderID = data.rows[0].id;
+      
+      db.query(queryFoodItems)
+        .then((foodItems) => res.render('index', {foodItems: foodItems.rows, orderID}));
+    });
   
 });
 
@@ -83,10 +82,24 @@ router.get('/login/:id', (req, res) => {
   res.redirect('/');
 });
 
+// ADD ITEM TO CART
 router.post('/order/:orderID', (req, res) => {
-  // create sql statement to add order to orders table
-  // make api request to send notification to restaurant
-  res.redirect('orders/:userID');
+
+  const foodItemID = req.body.foodItemID;
+  const quantity = req.body.quantity;
+  const orderID = req.params.orderID;
+
+  console.log("foodItemID", foodItemID);
+  console.log("quantity", quantity);
+  console.log("orderID", orderID);
+
+  const queryAddToCart = `
+  INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
+  `;
+
+  db.query(queryAddToCart, [orderID, foodItemID, quantity])
+    .then(() => res.redirect('/'));
+  
 });
 
 router.post('/orders/:orderID/timeToComplete', (req, res) => {
