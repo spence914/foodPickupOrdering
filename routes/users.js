@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
     })
     .then((data) => {
       const orderID = data.rows[0].id;
-      
+
       db.query(queryFoodItems)
         .then((foodItems) => {
           console.log("foodItems", foodItems);
@@ -126,13 +126,23 @@ router.get('/cart/:orderID', (req, res) => {
     });
 });
 
-// DELETE ORDER
-router.post('/users/cancelOrder/:orderID', (req, res) => {
+// DELETE ORDER IN CART
+router.post('/cancelOrder/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   userQueries.cancelCartOrder(orderID)
     .then((data) => {
       console.log('successfully deleted order', data);
       res.redirect(`/cart/${orderID}`);
+    });
+});
+
+// SUBMIT ORDER
+router.post('/submitOrder/:orderID', (req, res) => {
+  const orderID = req.params.orderID;
+  userQueries.submitOrder(orderID)
+    .then((data) => {
+      console.log('successfully submitted order', data);
+      res.redirect('/orders');
     });
 });
 
