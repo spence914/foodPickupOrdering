@@ -126,6 +126,16 @@ router.get('/cart/:orderID', (req, res) => {
     });
 });
 
+// DELETE ORDER
+router.post('/users/cancelOrder/:orderID', (req, res) => {
+  const orderID = req.params.orderID;
+  userQueries.cancelCartOrder(orderID)
+    .then((data) => {
+      console.log('successfully deleted order', data);
+      res.redirect(`/cart/${orderID}`);
+    });
+});
+
 // USER LOGIN
 router.get('/login/:id', (req, res) => {
   // using encrypted cookies
@@ -155,7 +165,7 @@ router.post('/order/:orderID', (req, res) => {
 
   db.query(queryAddToCart, [orderID, foodItemID, quantity])
     .then(() => res.redirect('/'));
-  
+
 });
 
 router.post('/orders/:orderID/timeToComplete', (req, res) => {
