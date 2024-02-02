@@ -44,7 +44,6 @@ router.get('/', (req, res) => {
       db.query(queryFoodItems)
         .then((foodItems) => res.render('index', {foodItems: foodItems.rows, orderID}));
     });
-  
 });
 
 // ORDER HISTORY
