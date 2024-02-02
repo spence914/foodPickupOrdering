@@ -113,6 +113,25 @@ const removeFoodItem = (foodItemName, orderID) => {
     });
 };
 
+// Function that update the quantity of a order_contents
+const updateQuantity = (newQuantity, orderID) => {
+  const queryString = `
+    UPDATE order_contents
+    SET quantity = $1
+    WHERE order_id = $2
+    RETURNING *;
+  `;
+
+  return db.query((queryString, [newQuantity, orderID]))
+    .then((data) => {
+      return data.rows[0];
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -120,5 +139,6 @@ module.exports = {
   cancelCartOrder,
   getOrderHistory,
   submitOrder,
-  removeFoodItem
+  removeFoodItem,
+  updateQuantity
 };
