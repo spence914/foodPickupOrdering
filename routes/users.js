@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
   SELECT id, name, description, (price/100) as price FROM food_items;
   `;
 
-  const userID = 6; // replace hard coded userID
+  const userID = req.cookies.user_id;
 
   db.query(queryCurrentOrder, [userID])
     .then((data) => {
@@ -95,8 +95,15 @@ router.get('/orders', (req, res) => {
     })
     .then(ordersWithItems => {
       // after all orders have been populated with items, ready to render
+      console.log(ordersWithItems);
+      let orderID;
 
-      res.render('orders', { orders: ordersWithItems });
+      for (const order of ordersWithItems) {
+        if (order.status === 'In Progress') {
+          orderID = order.id;
+        }
+      }
+      res.render('orders', { orders: ordersWithItems, orderID });
     });
 
 });
@@ -104,6 +111,7 @@ router.get('/orders', (req, res) => {
 // VIEW CART
 router.get('/cart/:orderID', (req, res) => {
   // const user = req.cookies.user_id;
+  console.log(req.params);
   const orderID = req.params.orderID || 1;
 
   console.log(orderID);
