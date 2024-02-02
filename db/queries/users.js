@@ -92,11 +92,33 @@ const submitOrder = (orderID) => {
     });
 };
 
+// delete order_contents that consist of food_items.name = ?
+const removeFoodItem = (foodItemName, orderID) => {
+  const queryString = `
+    DELETE FROM order_contents
+    USING food_items, orders
+    WHERE (order_contents.food_item_id = food_items.id)
+    AND (order_contents.order_id = orders.id)
+    AND food_items.name = $1
+    AND orders.id = $2
+    RETURNING *;
+  `;
+
+  return db.query(queryString, [foodItemName, orderID])
+    .then((data) => {
+      return data.rows[0];
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
   getOrders,
   cancelCartOrder,
   getOrderHistory,
-  submitOrder
+  submitOrder,
+  removeFoodItem
 };
