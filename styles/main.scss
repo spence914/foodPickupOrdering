@@ -95,6 +95,16 @@ body {
     padding: 5px;
   }
 
+  .editCart {
+    display: flex;
+    justify-content: space-evenly;
+    input{
+      height: 25px;
+      width: 50px;
+      align-self: center;
+    }
+  }
+
   form {
     align-self: center;
   }
