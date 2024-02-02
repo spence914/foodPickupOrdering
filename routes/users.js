@@ -11,12 +11,40 @@ const db = require('../db/connection');
 const { Template } = require('ejs');
 
 router.get('/', (req, res) => {
-  const queryString = `
+  //  If a current order exists select it, if not create a new order
+  const queryCurrentOrder = `
+  SELECT * FROM orders
+  WHERE user_id = $1 AND created_at IS NOT NULL AND placed_at IS NULL
+  `;
+
+  const queryCreateNewOrder = `
+  INSERT INTO orders (user_id) VALUES ($1)
+  `;
+
+  const queryFoodItems = `
   SELECT id, name, description, (price/100) as price FROM food_items;
   `;
 
-  db.query(queryString)
-    .then((data) => res.render('index', {foodItems: data.rows}));
+  const userID = 7;
+
+  let currentOrderID;
+
+  db.query(queryCurrentOrder, [userID])  //  replace 1 with userID
+    .then((data) => {
+      console.log(data.rows[0]);
+      if (!data.rows[0]) {
+        //  no current order exists
+        console.log("creating new order");
+        return db.query(queryCreateNewOrder, [userID])
+          .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
+      }
+      //  current order exists
+      return data;
+    })
+    .then((data) => console.log(data.rows));
+
+  // db.query(queryString)
+  //   .then((data) => res.render('index', {foodItems: data.rows}));
   
 });
 
@@ -29,6 +57,8 @@ router.get('/orders/:userID', (req, res) => {
 
 // VIEW CART
 router.get('/orders', (req, res) => {
+  const orderID = 101;
+  
   const queryString = `
   SELECT id, name, description, (price/100) as price FROM food_items;
   `;
