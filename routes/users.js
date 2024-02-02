@@ -117,11 +117,10 @@ router.get('/cart/:orderID', (req, res) => {
   console.log(req.params);
   const orderID = req.params.orderID || 1;
 
-  console.log(orderID);
   userQueries.getOrders(orderID)
     .then((data) => {
       const templateVars = { foodItems : data, orderID : orderID };
-      console.log('fooditems', templateVars.foodItems);
+      console.log(templateVars.foodItems[0]);
       res.render('cart', templateVars);
     });
 });
@@ -157,7 +156,19 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
       res.redirect(`/cart/${orderID}`);
     });
 
+});
 
+router.post('/updateQuantity/:orderID', (req, res) => {
+  const newQuantity = req.body.quantity;
+  const orderID = req.params.orderID;
+  const orderContentId = req.body.order_contents_id;
+
+  console.log("orderContentID", orderContentId, "newQuan", newQuantity)
+  userQueries.updateQuantity(newQuantity, orderContentId)
+    .then((data) => {
+      console.log(data);
+      res.redirect(`/cart/${orderID}`);
+    });
 });
 
 // USER LOGIN
