@@ -26,7 +26,7 @@ const getAllFoodItems = () => {
 // getOrders function => grab all order historical order listing for given userID, order by most recent
 const getOrders = (orderID) => {
   const queryString = `
-  SELECT name, price, thumbnail_photo_url, description, order_contents.quantity
+  SELECT name, price, thumbnail_photo_url, description, order_contents.quantity, order_contents.id as order_contentsId, orders.placed_at
   FROM food_items
   JOIN order_contents on (food_items.id = order_contents.food_item_id)
   JOIN orders on (order_contents.order_id = orders.id)
@@ -114,15 +114,15 @@ const removeFoodItem = (foodItemName, orderID) => {
 };
 
 // Function that update the quantity of a order_contents
-const updateQuantity = (newQuantity, orderID) => {
+const updateQuantity = (newQuantity, orderContentId) => {
   const queryString = `
-    UPDATE order_contents
-    SET quantity = $1
-    WHERE order_id = $2
-    RETURNING *;
+  UPDATE order_contents
+  SET quantity = $1
+  WHERE id = $2
+  RETURNING *;
   `;
 
-  return db.query((queryString, [newQuantity, orderID]))
+  return db.query(queryString, [newQuantity, orderContentId])
     .then((data) => {
       return data.rows[0];
     })
