@@ -146,6 +146,20 @@ router.post('/submitOrder/:orderID', (req, res) => {
     });
 });
 
+router.post('/removeFoodItem/:orderID', (req, res) => {
+  // need orderID and the food_items.id
+  const orderID = req.params.orderID;
+  const foodItemName = req.body.foodItemName;
+  userQueries.removeFoodItem(foodItemName, orderID)
+    .then((data) => {
+      console.log('deleted foodItem from order',data)
+
+      res.redirect(`/cart/${orderID}`);
+    });
+
+
+});
+
 // USER LOGIN
 router.get('/login/:id', (req, res) => {
   // using encrypted cookies
