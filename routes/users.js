@@ -12,13 +12,39 @@ const { Template } = require('ejs');
 const userQueries = require('../db/queries/users');
 
 router.get('/', (req, res) => {
-  const queryString = `
-  SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
+  //  If a current order exists select it, if not create a new order
+  const queryCurrentOrder = `
+  SELECT * FROM orders
+  WHERE user_id = $1 AND created_at IS NOT NULL AND placed_at IS NULL
   `;
 
-  db.query(queryString)
-    .then((data) => res.render('index', { foodItems: data.rows }));
+  const queryCreateNewOrder = `
+  INSERT INTO orders (user_id) VALUES ($1)
+  `;
 
+  const queryFoodItems = `
+  SELECT id, name, description, (price/100) as price FROM food_items;
+  `;
+
+  const userID = 6; // replace hard coded userID
+
+  db.query(queryCurrentOrder, [userID])
+    .then((data) => {
+      if (!data.rows[0]) {
+        //  no current order exists
+        console.log("Creating new order");
+        return db.query(queryCreateNewOrder, [userID])
+          .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
+      }
+      //  current order exists
+      return data;
+    })
+    .then((data) => {
+      const orderID = data.rows[0].id;
+      
+      db.query(queryFoodItems)
+        .then((foodItems) => res.render('index', {foodItems: foodItems.rows, orderID}));
+    });
 });
 
 // ORDER HISTORY
@@ -87,6 +113,21 @@ router.get('/cart/:orderId', (req, res) => {
     });
 });
 
+router.get('/orders', (req, res) => {
+  const orderID = 101;
+  
+  const queryString = `
+  SELECT id, name, description, (price/100) as price FROM food_items;
+  `;
+
+  db.query(queryString)
+    .then((data) => res.render('cart', {foodItems: data.rows}));
+  // Check if the user is logged in
+  // Populate currentOrder object from cookie data
+  //
+  // res.render('cart');
+});
+
 // USER LOGIN
 router.get('/login/:id', (req, res) => {
   // using encrypted cookies
@@ -99,10 +140,24 @@ router.get('/login/:id', (req, res) => {
   res.redirect('/');
 });
 
+// ADD ITEM TO CART
 router.post('/order/:orderID', (req, res) => {
-  // create sql statement to add order to orders table
-  // make api request to send notification to restaurant
-  res.redirect('orders/:userID');
+
+  const foodItemID = req.body.foodItemID;
+  const quantity = req.body.quantity;
+  const orderID = req.params.orderID;
+
+  console.log("foodItemID", foodItemID);
+  console.log("quantity", quantity);
+  console.log("orderID", orderID);
+
+  const queryAddToCart = `
+  INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
+  `;
+
+  db.query(queryAddToCart, [orderID, foodItemID, quantity])
+    .then(() => res.redirect('/'));
+  
 });
 
 router.post('/orders/:orderID/timeToComplete', (req, res) => {

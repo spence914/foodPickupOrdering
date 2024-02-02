@@ -32,9 +32,10 @@
               <p class="foodItemDescription"><%= item.description %></p>
             </div>
           </div>
-          <form action="/test" method="POST">
+          <form action="/order/<%= orderID %>" method="POST"> <!-- orderID might not exist -->
             <input type="number" id="quantity" name="quantity" step="1" min="1"/>
-            <input id="foodID" name="<%= item.id %>" />
+            <input type="hidden" name="foodItemID" value="<%= item.id %>"/>
+            <input type="hidden" name="orderID" value="<%= orderID %>"/>
             <button type="submit">Add to Cart</button>
           </form>
         </div>
