@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
   `;
 
   const queryFoodItems = `
-  SELECT id, name, description, (price/100) as price FROM food_items;
+  SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
   `;
 
   const userID = req.cookies.user_id;
@@ -43,7 +43,10 @@ router.get('/', (req, res) => {
       const orderID = data.rows[0].id;
       
       db.query(queryFoodItems)
-        .then((foodItems) => res.render('index', {foodItems: foodItems.rows, orderID}));
+        .then((foodItems) => {
+          console.log("foodItems", foodItems);
+          res.render('index', {foodItems: foodItems.rows, orderID})
+        });
     });
 });
 
