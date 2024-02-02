@@ -78,10 +78,11 @@ router.get('/orders', (req, res) => {
 router.get('/cart/:orderId', (req, res) => {
   // const user = req.cookies.user_id;
   const orderId = req.params.orderId || 1;
-
+  console.log(orderId);
   userQueries.getOrders(orderId)
     .then((data) => {
       const templateVars = { foodItems : data, orderId : orderId };
+      console.log('fooditems', templateVars.foodItems);
       res.render('cart', templateVars);
     });
 });
