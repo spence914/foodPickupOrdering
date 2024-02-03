@@ -1,22 +1,36 @@
 header {
   display: flex;
   flex-direction: row;
-  background-color: aliceblue;
   position: fixed;
-  top: 0;
-  width: 100%;
+  top: 12px;
   padding: 20px;
+  background-color: rgb(245, 245, 245);
+  margin: 12px;
+
 
   nav {
     display: flex;
     flex-direction: row;
-    width: 100vw;
+    width: 100%;
     justify-content: space-between;
+    align-items: center;
+    padding-left: 150px;
+    padding-right: 150px;
+
+
+    i{
+      font-size: 30px;
+      color: black;
+    }
 
     .header_right {
       i {
         padding-right: 10px;
       }
+    }
+    .header_title {
+      font-weight: bold;
+      font-size: 30px;
     }
   }
 }
