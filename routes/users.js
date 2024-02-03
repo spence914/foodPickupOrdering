@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
     })
     .then((data) => {
       const orderID = data.rows[0].id;
-      
+
       db.query(queryFoodItems)
         .then((foodItems) => {
           console.log("foodItems", foodItems);
@@ -117,12 +117,57 @@ router.get('/cart/:orderID', (req, res) => {
   console.log(req.params);
   const orderID = req.params.orderID || 1;
 
-  console.log(orderID);
   userQueries.getOrders(orderID)
     .then((data) => {
       const templateVars = { foodItems : data, orderID : orderID };
-      console.log('fooditems', templateVars.foodItems);
+      console.log(templateVars.foodItems[0]);
       res.render('cart', templateVars);
+    });
+});
+
+// DELETE ORDER IN CART
+router.post('/cancelOrder/:orderID', (req, res) => {
+  const orderID = req.params.orderID;
+  userQueries.cancelCartOrder(orderID)
+    .then((data) => {
+      console.log('successfully deleted order', data);
+      res.redirect(`/cart/${orderID}`);
+    });
+});
+
+// SUBMIT ORDER
+router.post('/submitOrder/:orderID', (req, res) => {
+  const orderID = req.params.orderID;
+  userQueries.submitOrder(orderID)
+    .then((data) => {
+      console.log('successfully submitted order', data);
+      res.redirect('/orders');
+    });
+});
+
+router.post('/removeFoodItem/:orderID', (req, res) => {
+  // need orderID and the food_items.id
+  const orderID = req.params.orderID;
+  const foodItemName = req.body.foodItemName;
+  userQueries.removeFoodItem(foodItemName, orderID)
+    .then((data) => {
+      console.log('deleted foodItem from order',data)
+
+      res.redirect(`/cart/${orderID}`);
+    });
+
+});
+
+router.post('/updateQuantity/:orderID', (req, res) => {
+  const newQuantity = req.body.quantity;
+  const orderID = req.params.orderID;
+  const orderContentId = req.body.order_contents_id;
+
+  console.log("orderContentID", orderContentId, "newQuan", newQuantity)
+  userQueries.updateQuantity(newQuantity, orderContentId)
+    .then((data) => {
+      console.log(data);
+      res.redirect(`/cart/${orderID}`);
     });
 });
 
@@ -155,7 +200,7 @@ router.post('/order/:orderID', (req, res) => {
 
   db.query(queryAddToCart, [orderID, foodItemID, quantity])
     .then(() => res.redirect('/'));
-  
+
 });
 
 router.post('/orders/:orderID/timeToComplete', (req, res) => {

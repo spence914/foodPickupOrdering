@@ -24,16 +24,16 @@ const getAllFoodItems = () => {
 };
 
 // getOrders function => grab all order historical order listing for given userID, order by most recent
-const getOrders = (orderId) => {
+const getOrders = (orderID) => {
   const queryString = `
-  SELECT name, price, thumbnail_photo_url, description, order_contents.quantity
+  SELECT name, price, thumbnail_photo_url, description, order_contents.quantity, order_contents.id as order_contentsId, orders.placed_at
   FROM food_items
   JOIN order_contents on (food_items.id = order_contents.food_item_id)
   JOIN orders on (order_contents.order_id = orders.id)
   WHERE orders.id = $1;
   `;
 
-  return db.query(queryString, [orderId])
+  return db.query(queryString, [orderID])
     .then((data) => {
       return data.rows;
     })
@@ -43,14 +43,14 @@ const getOrders = (orderId) => {
 };
 
 // delete the whole current cart order
-const cancelCartOrder = (orderId) => {
+const cancelCartOrder = (orderID) => {
   const queryString = `
     DELETE FROM orders
     WHERE id = $1
     RETURNING *;
   `;
 
-  return db.query(queryString, [orderId])
+  return db.query(queryString, [orderID])
     .then((data) => {
       return data.rows;
     })
@@ -74,10 +74,71 @@ const getOrderHistory = (userID) => {
     });
 };
 
+// Submit order, add value to column place_at
+const submitOrder = (orderID) => {
+  const queryString = `
+    UPDATE orders
+    SET placed_at = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
+    WHERE id = $1
+    RETURNING *;
+  `;
+
+  return db.query(queryString, [orderID])
+    .then((data) => {
+      return data.rows[0];
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+// delete order_contents that consist of food_items.name = ?
+const removeFoodItem = (foodItemName, orderID) => {
+  const queryString = `
+    DELETE FROM order_contents
+    USING food_items, orders
+    WHERE (order_contents.food_item_id = food_items.id)
+    AND (order_contents.order_id = orders.id)
+    AND food_items.name = $1
+    AND orders.id = $2
+    RETURNING *;
+  `;
+
+  return db.query(queryString, [foodItemName, orderID])
+    .then((data) => {
+      return data.rows[0];
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+// Function that update the quantity of a order_contents
+const updateQuantity = (newQuantity, orderContentId) => {
+  const queryString = `
+  UPDATE order_contents
+  SET quantity = $1
+  WHERE id = $2
+  RETURNING *;
+  `;
+
+  return db.query(queryString, [newQuantity, orderContentId])
+    .then((data) => {
+      return data.rows[0];
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
   getOrders,
   cancelCartOrder,
-  getOrderHistory
+  getOrderHistory,
+  submitOrder,
+  removeFoodItem,
+  updateQuantity
 };
