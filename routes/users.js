@@ -5,6 +5,14 @@
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 
+// TWILIO
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+const client = require('twilio')(accountSid, authToken, {
+  lazyLoading: false,
+});
+
 const express = require('express');
 const router = express.Router();
 const db = require('../db/connection');
@@ -26,7 +34,7 @@ router.get('/', (req, res) => {
   SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
   `;
 
-  const userID = req.cookies.user_id;
+  const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
 
   db.query(queryCurrentOrder, [userID])
     .then((data) => {
@@ -140,7 +148,14 @@ router.post('/submitOrder/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   userQueries.submitOrder(orderID)
     .then((data) => {
-      console.log('successfully submitted order', data);
+      //  Leave commented to save $$
+      // client.messages
+      //   .create({
+      //     body: 'Hello from twilio-node',
+      //     to: '+16472398492', // Text your number
+      //     from: '+14085604628', // From a valid Twilio number
+      //   })
+      //   .then((message) => console.log(message.sid));
       res.redirect('/orders');
     });
 });
