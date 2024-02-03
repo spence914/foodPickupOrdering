@@ -32,7 +32,6 @@
 body {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   min-height: 100vh;
   font-family: 'norms';
@@ -46,7 +45,7 @@ body {
     background-color: rgb(225, 225, 225);
     width: 100%;
     align-items: center;
-
+    height: 100vh;
     .menu_item {
       display: flex;
       flex-direction: row;
@@ -125,12 +124,15 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin-left: 7px;
   }
 
-  .foodInformation {
-    display: flex;
-    flex-direction: column;
-    padding: 5px;
+  #foodInformation {
+    padding-left: 10px;
+  }
+
+  #foodNameAndPrice {
+    font-weight: bold;
   }
 
   .editCart {
