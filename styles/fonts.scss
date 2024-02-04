@@ -5,28 +5,35 @@
 }
 
 @font-face {
-  font-family: 'norms';
+  font-family: 'TT-Norms-Regular';
   src: url('/fonts/TT-Norms/TT-Norms-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'norms';
+  font-family: 'TT-Norms-Medium';
+  src: url('/fonts/TT-Norms/TT-Norms-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT-Norms';
   src: url('/fonts/TT-Norms/TT-Norms-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'norms';
+  font-family: 'TT-Norms';
   src: url('/fonts/TT-Norms/TT-Norms-Italic.ttf') format('truetype');
   font-weight: normal;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'norms';
+  font-family: 'TT-Norms';
   src: url('/fonts/TT-Norms/TT-Norms-BoldItalic.ttf') format('truetype');
   font-weight: bold;
   font-style: italic;

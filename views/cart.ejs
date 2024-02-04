@@ -30,7 +30,7 @@
               <img src="https://www.allrecipes.com/thmb/0xH8n2D4cC97t7mcC7eT2SDZ0aE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/6776_Pizza-Dough_ddmfs_2x1_1725-fdaa76496da045b3bdaadcec6d4c5398.jpg" />
               <!-- <img src="<%= item.thumbnail_url %>"/> -->
               <div id ="foodInformation">
-                <p><%= item.name %> <%= item.price %></p>
+                <p class="foodNameAndPrice"><%= item.name %> • $<%= item.price %></p>
                 <p class="foodItemDescription"><%= item.description %></p>
               </div>
             </div>
@@ -38,23 +38,23 @@
               <form action="/updateQuantity/<%= orderID %>" method="POST">
                 <input type="number" id="quantity" name="quantity" value="<%= item.quantity %>" step="1" min="1"/>
                 <input type="hidden" name="order_contents_id" value="<%= item.order_contentsid %>"/>
-                <button type="submit">Update</button>
+                <button type="submit">UPDATE</button>
               </form>
               <form action="/removeFoodItem/<%= orderID%>" method="POST">
                 <input type="hidden" name="foodItemName" value="<%= item.name%>">
-                <button type="submit">Remove</button>
+                <button class="buttonNegative" type="submit">REMOVE</button>
               </form>
             </div>
           </div>
         <% } %>
       <% } %>
       <!-- END OF FOOD ITEMS LIST -->
-        <div class="confirmation_bar">
-          <form action="/users/cancelOrder/<%= orderID %>" method="POST">
-            <button type="submit">CANCEL ORDER</button>
-          </form>
+        <div class="confirmationBar">
           <form action="/users/submitOrder/<%= orderID %>" method="POST">
             <button type="submit">SUBMIT</button>
+          </form>
+          <form action="/users/cancelOrder/<%= orderID %>" method="POST">
+            <button class="buttonNegative" type="submit">CANCEL</button>
           </form>
         </div>
     </main>

@@ -28,7 +28,7 @@
           <div id="foodDisplay">
             <img src="<%= item.thumbnail_photo_url %>"/>
             <div id ="foodInformation">
-              <p id="foodNameAndPrice"><%= item.name %> • $<%= item.price %></p>
+              <p class="foodNameAndPrice"><%= item.name %> • $<%= item.price %></p>
               <p class="foodItemDescription"><%= item.description %></p>
             </div>
           </div>
@@ -36,7 +36,7 @@
             <input type="number" id="quantity" name="quantity" step="1" min="1"/>
             <input type="hidden" name="foodItemID" value="<%= item.id %>"/>
             <input type="hidden" name="orderID" value="<%= orderID %>"/>
-            <button type="submit">Add to Cart</button>
+            <button type="submit">ADD TO CART</button>
           </form>
         </div>
       <% } %>
