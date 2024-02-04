@@ -74,7 +74,7 @@ router.get('/orders/users', (req, res) => {
     orders.id,
     orders.created_at,
     orders.status,
-    SUM(order_contents.quantity * food_items.price)/100 AS total_price
+    SUM(order_contents.quantity * food_items.price) AS total_price
   FROM
     orders
   JOIN
@@ -84,7 +84,8 @@ router.get('/orders/users', (req, res) => {
   WHERE
     orders.user_id = $1
   GROUP BY
-    orders.id;`;
+    orders.id
+  ORDER BY orders.created_at DESC;`;
 
   db.query(queryString, [userID])
     .then(orderData => {
@@ -94,7 +95,7 @@ router.get('/orders/users', (req, res) => {
         const itemQuery = `SELECT
           food_items.name,
           order_contents.quantity,
-          food_items.price/100 AS price
+          food_items.price AS price
         FROM
           order_contents
         JOIN
@@ -134,7 +135,7 @@ router.get('/orders/admin', (req, res) => {
     orders.id,
     orders.created_at,
     orders.status,
-    SUM(order_contents.quantity * food_items.price)/100 AS total_price
+    SUM(order_contents.quantity * food_items.price) AS total_price
   FROM
     orders
   JOIN
@@ -144,7 +145,8 @@ router.get('/orders/admin', (req, res) => {
   WHERE
     orders.status <> 'completed'
   GROUP BY
-    orders.id;`;
+    orders.id
+  ORDER BY orders.created_at DESC;`;
 
   db.query(queryString)
     .then(orderData => {
@@ -154,7 +156,7 @@ router.get('/orders/admin', (req, res) => {
         const itemQuery = `SELECT
           food_items.name,
           order_contents.quantity,
-          food_items.price/100 AS price
+          food_items.price AS price
         FROM
           order_contents
         JOIN

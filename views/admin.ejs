@@ -36,12 +36,12 @@
         <ul>
           <% order.items.forEach(function(item) { %>
             <li>
-              <%= item.name %> - Quantity: <%= item.quantity %>, Price: $<%= item.price %>
+              <%= item.name %> - Quantity: <%= item.quantity %>, Price: $<%= (item.price/100).toFixed(2) %>
             </li>
             <% }); %>
           </ul>
         </div>
-        <p class="totalPrice">Order Total: $<%= order.total_price %></p>
+        <p class="totalPrice">Order Total: $<%= (order.total_price/100).toFixed(2) %></p>
         <form action="/orders/admin/time" method="POST">
           <label for="time-to-complete">Time to complete</label>
           <input name="timeToComplete" type="number">
