@@ -61,7 +61,7 @@ router.get('/', (req, res) => {
 // ORDER HISTORY
 router.get('/orders', (req, res) => {
   const userID = req.cookies.user_id;
-  if (userID === 1) {
+  if (userID === '1') {
     res.redirect('/orders/admin');
   } res.redirect('/orders/users');
 });
