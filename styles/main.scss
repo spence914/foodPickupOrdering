@@ -1,6 +1,11 @@
 @use 'fonts';
 
 p { margin: 0 }
+ul { 
+  margin: 0px;
+  margin-bottom: 10px;
+}
+li { margin: 0px }
 
 @mixin border {
   border: solid;
@@ -48,9 +53,6 @@ body {
       padding: 10px;
     }
 
-    p {
-      margin: 10px;
-    }
   }
 }
 
@@ -66,6 +68,8 @@ body {
 
   @include border;
   border-radius: 15px;
+
+  box-shadow: 0 5px 5px rgb(100, 100, 100);
 
   img {
     height: 90px;
@@ -137,6 +141,11 @@ button:hover {
 
 #foodInformation {
   padding-left: 10px;
+  
+  p {
+    margin: 10px;
+  }
+
 }
 
 .foodNameAndPrice {
@@ -147,6 +156,7 @@ button:hover {
 .foodItemDescription {
   font-size: 15pt;
   font-family: 'TT-Norms-Regular';
+  font-variant-ligatures: none;
 }
 
 .buttonNegative {
@@ -167,4 +177,36 @@ button:hover {
 
   @include border;
   border-radius: 15px;
+  box-shadow: 0 5px 5px rgb(100, 100, 100);
+}
+
+.allUsersOrders {
+  display: flex;
+  background-color: rgb(235, 235, 235);
+  width: 80vw;
+  flex-direction: row;
+
+  margin: 10px;
+  padding: 10px;
+
+  @include border;
+  border-radius: 15px;
+  box-shadow: 0 5px 5px rgb(100, 100, 100);
+
+  p {
+    margin: 2px;
+    font-family: 'TT-Norms-Regular';
+    font-variant-ligatures: none;
+  }
+
+}
+
+li {
+  margin: 3px 0px 3px 0px;
+  font-family: 'TT-Norms-Regular';
+  font-variant-ligatures: none;
+}
+
+.totalPrice {
+  margin-top: 10px;
 }
