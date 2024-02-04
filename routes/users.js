@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
     .then((data) => {
       if (!data.rows[0]) {
         //  no current order exists
-        console.log("Creating new order");
+        // console.log("Creating new order");
         return db.query(queryCreateNewOrder, [userID])
           .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
@@ -52,7 +52,7 @@ router.get('/', (req, res) => {
 
       db.query(queryFoodItems)
         .then((foodItems) => {
-          console.log("foodItems", foodItems);
+          // console.log("foodItems", foodItems);
           res.render('index', {foodItems: foodItems.rows, orderID})
         });
     });
@@ -166,7 +166,7 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
   const foodItemName = req.body.foodItemName;
   userQueries.removeFoodItem(foodItemName, orderID)
     .then((data) => {
-      console.log('deleted foodItem from order',data)
+      console.log('deleted foodItem from order',data);
 
       res.redirect(`/cart/${orderID}`);
     });
@@ -209,12 +209,41 @@ router.post('/order/:orderID', (req, res) => {
   console.log("quantity", quantity);
   console.log("orderID", orderID);
 
+  //  Check cart for existing entries of added item
+  const searchCart = `
+  SELECT * FROM order_contents
+  WHERE order_id = $1
+  AND food_item_id = $2
+  `;
+
   const queryAddToCart = `
   INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
   `;
 
-  db.query(queryAddToCart, [orderID, foodItemID, quantity])
-    .then(() => res.redirect('/'));
+  const queryUpdateCart = `
+  UPDATE order_contents
+  SET quantity = quantity + $1
+  WHERE order_id = $2
+  AND food_item_id = $3
+  `;
+
+  db.query(searchCart, [orderID, foodItemID])
+    .then((data) => {
+      console.log(data.rows);
+      if (data.rows.length === 0) {
+        // food item has no listings in current cart
+        // needs to be added in
+        db.query(queryAddToCart, [orderID, foodItemID, quantity])
+          .then(() => res.redirect('/'));
+      }
+      if (data.rows.length > 0) {
+        // food item has a listing
+        // update quantity
+        db.query(queryUpdateCart, [quantity, orderID, foodItemID])
+          .then(() => res.redirect('/'));
+      }
+    });
+
 
 });
 
