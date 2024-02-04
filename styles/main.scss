@@ -78,6 +78,10 @@ body {
       }
     }
 
+    .subtotal_box {
+      display: flex;
+      justify-content: row;
+    }
     .confirmation_bar {
       display: flex;
       background-color: antiquewhite;
