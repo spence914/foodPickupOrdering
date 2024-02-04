@@ -124,12 +124,24 @@ router.get('/cart/:orderID', (req, res) => {
   // const user = req.cookies.user_id;
   console.log(req.params);
   const orderID = req.params.orderID || 1;
+  let templateVars;
 
   userQueries.getOrders(orderID)
     .then((data) => {
-      const templateVars = { foodItems : data, orderID : orderID };
-      console.log(templateVars.foodItems[0]);
-      res.render('cart', templateVars);
+      templateVars = { foodItems : data, orderID : orderID };
+      return userQueries.getSubtotal(orderID);
+    })
+    .then((data) => {
+      // if subtotal is undefined, no order, display $0 subtotal
+      if (!data) {
+        templateVars.subtotal = 0;
+      } else {
+        // if data.rows.length > 1, that means there is multiple, we have to iterate and calculate the sum
+        templateVars.subtotal = data.reduce((prev, curr) => {
+          return Number(curr.subtotal) + prev;
+        }, 0);
+        res.render('cart', templateVars);
+      }
     });
 });
 
