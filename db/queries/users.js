@@ -132,6 +132,23 @@ const updateQuantity = (newQuantity, orderContentId) => {
 
 };
 
+// find users' phone number by orderID
+const getOwnerPhone = () => {
+  const queryString = `
+  SELECT phone_number
+  FROM users
+  WHERE id = 1;
+  `;
+
+  return db.query(queryString)
+    .then((data) => {
+      return data.rows[0].phone_number;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -140,5 +157,6 @@ module.exports = {
   getOrderHistory,
   submitOrder,
   removeFoodItem,
-  updateQuantity
+  updateQuantity,
+  getOwnerPhone
 };

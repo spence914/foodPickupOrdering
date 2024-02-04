@@ -52,7 +52,7 @@ router.get('/', (req, res) => {
 
       db.query(queryFoodItems)
         .then((foodItems) => {
-          console.log("foodItems", foodItems);
+          // console.log("foodItems", foodItems);
           res.render('index', { foodItems: foodItems.rows, orderID })
         });
     });
@@ -60,8 +60,7 @@ router.get('/', (req, res) => {
 
 // ORDER HISTORY
 router.get('/orders', (req, res) => {
-  //const userID = req.cookies.user_id;
-  const userID = 1;
+  const userID = req.cookies.user_id;
   if (userID === 1) {
     res.redirect('/orders/admin');
   } res.redirect('/orders/users');
@@ -114,7 +113,7 @@ router.get('/orders/users', (req, res) => {
     })
     .then(ordersWithItems => {
       // after all orders have been populated with items, ready to render
-      console.log(ordersWithItems);
+      // console.log(ordersWithItems);
       let orderID;
 
       for (const order of ordersWithItems) {
@@ -173,7 +172,7 @@ router.get('/orders/admin', (req, res) => {
     })
     .then(ordersWithItems => {
       // after all orders have been populated with items, ready to render
-      console.log(ordersWithItems);
+      // console.log(ordersWithItems);
       let orderID;
 
       for (const order of ordersWithItems) {
@@ -181,14 +180,14 @@ router.get('/orders/admin', (req, res) => {
           orderID = order.id;
         }
       }
-      res.render('orders', { orders: ordersWithItems, orderID });
+      res.render('admin', { orders: ordersWithItems, orderID });
     });
 });
 
 router.post('/orders/admin/time', (req, res) => {
   const queryString = `UPDATE orders SET status = 'completed', time_to_complete = $1 WHERE id = $2`;
-  const orderID = req.params.orderID || 1;
-  const timeToComplete = req.params.timeToComplete;
+  const orderID = req.body.orderID;
+  const timeToComplete = req.body.timeToComplete;
 
   db.query(queryString, [timeToComplete, orderID]);
 
@@ -220,14 +219,14 @@ router.post('/orders/admin/time', (req, res) => {
 
 // VIEW CART
 router.get('/cart/:orderID', (req, res) => {
-  // const user = req.cookies.user_id;
-  console.log(req.params);
+  // if there is no pending order, send your cart is empty message
+
   const orderID = req.params.orderID || 1;
 
   userQueries.getOrders(orderID)
     .then((data) => {
       const templateVars = { foodItems: data, orderID: orderID };
-      console.log(templateVars.foodItems[0]);
+      // console.log(templateVars.foodItems[0]);
       res.render('cart', templateVars);
     });
 });
@@ -237,7 +236,7 @@ router.post('/cancelOrder/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   userQueries.cancelCartOrder(orderID)
     .then((data) => {
-      console.log('successfully deleted order', data);
+      // console.log('successfully deleted order', data);
       res.redirect(`/cart/${orderID}`);
     });
 });
@@ -246,16 +245,18 @@ router.post('/cancelOrder/:orderID', (req, res) => {
 router.post('/submitOrder/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   userQueries.submitOrder(orderID)
-    .then((data) => {
+    .then(() => {
       //  Leave commented to save $$
-      // client.messages
-      //   .create({
-      //     body: 'Hello from twilio-node',
-      //     to: '+16472398492', // Text your number
-      //     from: '+14085604628', // From a valid Twilio number
-      //   })
-      //   .then((message) => console.log(message.sid));
-      res.redirect('/orders');
+      // userQueries.getOwnerPhone().then((phoneNumber) => {
+      //   client.messages
+      //     .create({
+      //       body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
+      //       to: phoneNumber, // Text your number
+      //       from: '+14085604628', // From a valid Twilio number
+      //     })
+      //     .then((message) => console.log(message.sid));
+      //   res.redirect('/orders');
+      // });
     });
 });
 
@@ -265,7 +266,7 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
   const foodItemName = req.body.foodItemName;
   userQueries.removeFoodItem(foodItemName, orderID)
     .then((data) => {
-      console.log('deleted foodItem from order', data)
+      // console.log('deleted foodItem from order', data)
 
       res.redirect(`/cart/${orderID}`);
     });
@@ -277,10 +278,9 @@ router.post('/updateQuantity/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   const orderContentId = req.body.order_contents_id;
 
-  console.log("orderContentID", orderContentId, "newQuan", newQuantity)
   userQueries.updateQuantity(newQuantity, orderContentId)
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       res.redirect(`/cart/${orderID}`);
     });
 });
@@ -304,9 +304,9 @@ router.post('/order/:orderID', (req, res) => {
   const quantity = req.body.quantity;
   const orderID = req.params.orderID;
 
-  console.log("foodItemID", foodItemID);
-  console.log("quantity", quantity);
-  console.log("orderID", orderID);
+  // console.log("foodItemID", foodItemID);
+  // console.log("quantity", quantity);
+  // console.log("orderID", orderID);
 
   const queryAddToCart = `
   INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
