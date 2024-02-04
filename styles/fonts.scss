@@ -1,0 +1,33 @@
+@font-face {
+  font-family: "Berlin Sans FB";
+  font-weight: 400;
+  src: url('/fonts/BRLNSR/BRLNSR.TTF') format('truetype');
+}
+
+@font-face {
+  font-family: 'norms';
+  src: url('/fonts/TT-Norms/TT-Norms-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'norms';
+  src: url('/fonts/TT-Norms/TT-Norms-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'norms';
+  src: url('/fonts/TT-Norms/TT-Norms-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'norms';
+  src: url('/fonts/TT-Norms/TT-Norms-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}

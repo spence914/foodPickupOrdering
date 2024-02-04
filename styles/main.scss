@@ -1,43 +1,12 @@
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-Italic.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-BoldItalic.ttf') format('truetype');
-  font-weight: bold;
-  font-style: italic;
-}
-
-
-
+@use 'fonts';
 
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100%;
   font-family: 'norms';
   background: rgb(245,245,245);
-  margin: 12px;
-  border: solid;
 
   main {
     display: flex;
