@@ -49,20 +49,20 @@
         <% } %>
       <% } %>
       <!-- END OF FOOD ITEMS LIST -->
-        <div class="subtotal_box">
-          <p>SubTotal: </p>
-          <p>$<%= subtotal %></p>
-        </div>
+        
         <div class="confirmationBar">
-          <form action="/users/cancelOrder/<%= orderID %>" method="POST">
-            <button type="submit">CANCEL ORDER</button>
-          </form>
-          <form action="/users/submitOrder/<%= orderID %>" method="POST">
-            <button type="submit">SUBMIT</button>
-          </form>
-          <form action="/users/cancelOrder/<%= orderID %>" method="POST">
-            <button class="buttonNegative" type="submit">CANCEL</button>
-          </form>
+          <p><strong>SUBTOTAL : </strong>$<%= subtotal %></p>
+          <div>
+            <form action="/users/cancelOrder/<%= orderID %>" method="POST">
+              <button type="submit">CANCEL ORDER</button>
+            </form>
+            <form action="/users/submitOrder/<%= orderID %>" method="POST">
+              <button type="submit">SUBMIT</button>
+            </form>
+            <form action="/users/cancelOrder/<%= orderID %>" method="POST">
+              <button class="buttonNegative" type="submit">CANCEL</button>
+            </form>
+          </div>
         </div>
     </main>
 </body>

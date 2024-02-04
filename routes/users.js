@@ -140,6 +140,8 @@ router.get('/cart/:orderID', (req, res) => {
         templateVars.subtotal = data.reduce((prev, curr) => {
           return Number(curr.subtotal) + prev;
         }, 0);
+        templateVars.subtotal = templateVars.subtotal.toFixed(2);
+        console.log(templateVars.subtotal);
         res.render('cart', templateVars);
       }
     });

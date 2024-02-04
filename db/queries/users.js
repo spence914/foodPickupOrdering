@@ -45,7 +45,7 @@ const getOrders = (orderID) => {
 // calculate subtotal for current order
 const getSubtotal = (orderID) => {
   const queryString = `
-    SELECT SUM(price * order_contents.quantity) / 100 AS subtotal
+    SELECT SUM(price * order_contents.quantity)/100 AS subtotal
     FROM food_items
     JOIN order_contents on (food_items.id = order_contents.food_item_id)
     JOIN orders on (order_contents.order_id = orders.id)
