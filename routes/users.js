@@ -53,13 +53,21 @@ router.get('/', (req, res) => {
       db.query(queryFoodItems)
         .then((foodItems) => {
           console.log("foodItems", foodItems);
-          res.render('index', {foodItems: foodItems.rows, orderID})
+          res.render('index', { foodItems: foodItems.rows, orderID })
         });
     });
 });
 
 // ORDER HISTORY
 router.get('/orders', (req, res) => {
+  //const userID = req.cookies.user_id;
+  const userID = 1;
+  if (userID === 1) {
+    res.redirect('/orders/admin');
+  } res.redirect('/orders/users');
+});
+
+router.get('/orders/users', (req, res) => {
   const userID = req.cookies.user_id;
 
 
@@ -119,6 +127,97 @@ router.get('/orders', (req, res) => {
 
 });
 
+// Admin Orders page
+
+router.get('/orders/admin', (req, res) => {
+
+  const queryString = `SELECT
+    orders.id,
+    orders.created_at,
+    orders.status,
+    SUM(order_contents.quantity * food_items.price)/100 AS total_price
+  FROM
+    orders
+  JOIN
+    order_contents ON orders.id = order_contents.order_id
+  JOIN
+    food_items ON food_items.id = order_contents.food_item_id
+  WHERE
+    orders.status <> 'completed'
+  GROUP BY
+    orders.id;`;
+
+  db.query(queryString)
+    .then(orderData => {
+      const orders = orderData.rows;
+      // Map each order to a promise that fetches its items
+      const itemPromises = orders.map(order => {
+        const itemQuery = `SELECT
+          food_items.name,
+          order_contents.quantity,
+          food_items.price/100 AS price
+        FROM
+          order_contents
+        JOIN
+          food_items ON food_items.id = order_contents.food_item_id
+        WHERE
+          order_contents.order_id = $1;`;
+
+        return db.query(itemQuery, [order.id]).then(itemData => {
+          order.items = itemData.rows; // Assign the fetched items to the order
+          return order; // Return the updated order
+        });
+      });
+
+      return Promise.all(itemPromises);
+    })
+    .then(ordersWithItems => {
+      // after all orders have been populated with items, ready to render
+      console.log(ordersWithItems);
+      let orderID;
+
+      for (const order of ordersWithItems) {
+        if (order.status === 'In Progress') {
+          orderID = order.id;
+        }
+      }
+      res.render('orders', { orders: ordersWithItems, orderID });
+    });
+});
+
+router.post('/orders/admin/time', (req, res) => {
+  const queryString = `UPDATE orders SET status = 'completed', time_to_complete = $1 WHERE id = $2`;
+  const orderID = req.params.orderID || 1;
+  const timeToComplete = req.params.timeToComplete;
+
+  db.query(queryString, [timeToComplete, orderID]);
+
+  const userInfoQuery = `SELECT users.phone_number FROM users JOIN orders ON orders.user_id = users.id WHERE orders.id = $1`;
+  db.query(userInfoQuery, [orderID])
+    .then(data => {
+      let userPhone = data.rows[0].phone_number;
+      client.messages
+        .create({
+          body: `Your food is being prepared and will be ready in ${timeToComplete} minutes`,
+          to: userPhone, // Text your number
+          from: '+14085604628', // From a valid Twilio number
+        })
+        .then((message) => console.log(message.sid));
+      setTimeout(() => {
+        client.messages
+          .create({
+            body: `Your food is ready!`,
+            to: userPhone, // Text your number
+            from: '+14085604628', // From a valid Twilio number
+          });
+      }, timeToComplete * 60000);
+    });
+
+
+  res.redirect('/orders');
+});
+
+
 // VIEW CART
 router.get('/cart/:orderID', (req, res) => {
   // const user = req.cookies.user_id;
@@ -127,7 +226,7 @@ router.get('/cart/:orderID', (req, res) => {
 
   userQueries.getOrders(orderID)
     .then((data) => {
-      const templateVars = { foodItems : data, orderID : orderID };
+      const templateVars = { foodItems: data, orderID: orderID };
       console.log(templateVars.foodItems[0]);
       res.render('cart', templateVars);
     });
@@ -166,7 +265,7 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
   const foodItemName = req.body.foodItemName;
   userQueries.removeFoodItem(foodItemName, orderID)
     .then((data) => {
-      console.log('deleted foodItem from order',data)
+      console.log('deleted foodItem from order', data)
 
       res.redirect(`/cart/${orderID}`);
     });
