@@ -26,13 +26,13 @@
  <% for (let order of orders) { %>
   <div class="allUsersOrders">
     <div class="order">
-      <p class="orderID">Order # <%= order.id %> </p>
-      <p class="timestamp">Order Placed: <%= order.created_at %></p>
-      <p class="status">Status: <%= order.status %></p>
+      <p class="orderID"><strong>Order ID: </strong>#<%= order.id %> </p>
+      <p class="timestamp"><strong>Placed At: </strong><%= order.created_at %></p>
+      <p class="status"><strong>Status: </strong><%= order.status %></p>
 
       <!-- Display items for each order -->
       <div class="orderItems">
-        <h4>Items:</h4>
+        <p><strong>Items:</strong>
         <ul>
           <% order.items.forEach(function(item) { %>
             <li>
@@ -41,7 +41,7 @@
             <% }); %>
           </ul>
         </div>
-        <p class="totalPrice">Order Total: $<%= order.total_price %></p>
+        <p class="totalPrice"><strong>Order Total: </strong>$<%= order.total_price %></p>
     </div>
   </div>
 <% } %>

@@ -149,13 +149,13 @@ router.post('/submitOrder/:orderID', (req, res) => {
   userQueries.submitOrder(orderID)
     .then((data) => {
       //  Leave commented to save $$
-      // client.messages
-      //   .create({
-      //     body: 'Hello from twilio-node',
-      //     to: '+16472398492', // Text your number
-      //     from: '+14085604628', // From a valid Twilio number
-      //   })
-      //   .then((message) => console.log(message.sid));
+      client.messages
+        .create({
+          body: 'Hello from twilio-node',
+          to: '+16472398492', // Text your number
+          from: '+14085604628', // From a valid Twilio number
+        })
+        .then((message) => console.log(message.sid));
       res.redirect('/orders');
     });
 });

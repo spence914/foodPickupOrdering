@@ -1,81 +1,47 @@
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+@use 'fonts';
+
+p { margin: 0 }
+ul { 
+  margin: 0px;
+  margin-bottom: 10px;
 }
+li { margin: 0px }
 
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
+@mixin border {
+  border: solid;
+  border-width: 3px;
 }
-
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-Italic.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'norms';
-  src: url('/fonts/TT-Norms/TT-Norms-BoldItalic.ttf') format('truetype');
-  font-weight: bold;
-  font-style: italic;
-}
-
-
-
 
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  font-family: 'norms';
-  background: rgb(245,245,245);
-  margin: 12px;
-  border: solid;
+  min-height: 100%;
+  font-size: 14pt;
+  background-color: rgb(225, 225, 225);
+
 
   main {
     display: flex;
     flex-direction: column;
-    background-color: rgb(225, 225, 225);
-    width: 100%;
     align-items: center;
+    width: 100%;
     height: 100vh;
-    .menu_item {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding-top: 10px;
-    }
-    .body_item_left{
-      display: flex;
-      img {
-        width: auto;
-        height: 250px;
-        margin-right: 10px;
-      }
-    }
-    .body_item_center{
-      display: flex;
-      flex-direction: column;
-      .item_title_price{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-      }
-    }
-    .body_item_right{
+    margin-top: 30px;
 
-      margin-left: 100px;
-      input{
-        height: 50px;
-        width: 50px;
-      }
+    img {
+      width: auto;
+      height: 250px;
+      margin-right: 10px;
+    }
+
+    input{
+      height: 30px;
+      width: 50px;
+    }
+
+    button {
+      margin: 10px;
     }
 
     .confirmation_bar {
@@ -85,18 +51,14 @@ body {
       width: 80vw;
       margin: 10px;
       padding: 10px;
-
-      button {
-        margin: 10px;
-      }
     }
+
   }
 }
 
 .foodItem {
   display: flex;
   background-color: rgb(235, 235, 235);
-  border-radius: 20px;
   width: 80vw;
   flex-direction: row;
   justify-content: space-between;
@@ -104,45 +66,23 @@ body {
   margin: 10px;
   padding: 10px;
 
-  border: solid;
+  @include border;
+  border-radius: 15px;
+
+  box-shadow: 0 5px 5px rgb(100, 100, 100);
 
   img {
     height: 90px;
     width: 90px;
     object-fit: cover;
     object-position: center;
-    border: solid;
+    @include border;
     border-radius: 10px;
-  }
-
-  button {
-    border: solid;
-    border-radius: 10px;
-  }
-
-  #foodDisplay {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-left: 7px;
-  }
-
-  #foodInformation {
-    padding-left: 10px;
-  }
-
-  #foodNameAndPrice {
-    font-weight: bold;
   }
 
   .editCart {
     display: flex;
     justify-content: space-evenly;
-    input{
-      height: 25px;
-      width: 50px;
-      align-self: center;
-    }
   }
 
   form {
@@ -150,9 +90,18 @@ body {
   }
 
   input {
-    width: 45px;
-    border: solid;
-    border-radius: 10px;
+    font-family: 'TT-Norms-Medium';
+    font-size: 15pt;
+
+    width: 55px;
+    height: 38px;
+    @include border;
+    border-radius: 8px;
+
+    padding-left: 8px;
+    padding-bottom: 2px;
+    margin: 5px;
+
     background-color: rgb(235, 235, 235);
   }
 }
@@ -161,11 +110,103 @@ body {
   margin-top: 20px;
 
   background-color: antiquewhite;
-  border-radius: 20px;
+  @include border;
   .order {
     display: flex;
     flex-direction: column;
     padding: 10px;
 
   }
+}
+
+button {
+  @include border;
+  border-radius: 8px;
+  font-family: 'TT-Norms-Medium';
+  font-size: 15pt;
+  padding: 5px 10px 5px 10px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+#foodDisplay {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0 8px 15px;
+}
+
+#foodInformation {
+  padding-left: 10px;
+  
+  p {
+    margin: 10px;
+  }
+
+}
+
+.foodNameAndPrice {
+  font-size: 18pt;
+  font-family: 'TT-Norms-Medium';
+}
+
+.foodItemDescription {
+  font-size: 15pt;
+  font-family: 'TT-Norms-Regular';
+  font-variant-ligatures: none;
+}
+
+.buttonNegative {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
+.confirmationBar {
+  display: flex;
+  background-color: rgb(235, 235, 235);
+  width: 80vw;
+  flex-direction: row;
+  justify-content: right;
+
+  margin: 10px;
+  padding: 10px;
+
+  @include border;
+  border-radius: 15px;
+  box-shadow: 0 5px 5px rgb(100, 100, 100);
+}
+
+.allUsersOrders {
+  display: flex;
+  background-color: rgb(235, 235, 235);
+  width: 80vw;
+  flex-direction: row;
+
+  margin: 10px;
+  padding: 10px;
+
+  @include border;
+  border-radius: 15px;
+  box-shadow: 0 5px 5px rgb(100, 100, 100);
+
+  p {
+    margin: 2px;
+    font-family: 'TT-Norms-Regular';
+    font-variant-ligatures: none;
+  }
+
+}
+
+li {
+  margin: 3px 0px 3px 0px;
+  font-family: 'TT-Norms-Regular';
+  font-variant-ligatures: none;
+}
+
+.totalPrice {
+  margin-top: 10px;
 }
