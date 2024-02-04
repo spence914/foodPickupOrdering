@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
   `;
 
   const queryFoodItems = `
-  SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
+  SELECT id, name, description, price, thumbnail_photo_url FROM food_items;
   `;
 
   const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
