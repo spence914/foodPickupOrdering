@@ -26,7 +26,7 @@ const getAllFoodItems = () => {
 // getOrders function => grab all order historical order listing for given userID, order by most recent
 const getOrders = (orderID) => {
   const queryString = `
-  SELECT food_items.name, (food_items.price / 100) as price, thumbnail_photo_url, description, order_contents.quantity, order_contents.id as order_contentsId, orders.placed_at
+  SELECT food_items.name, CAST((food_items.price / 100) as numeric(10,2)) as price, thumbnail_photo_url, description, order_contents.quantity, order_contents.id as order_contentsId, orders.placed_at
   FROM food_items
   JOIN order_contents on (food_items.id = order_contents.food_item_id)
   JOIN orders on (order_contents.order_id = orders.id)

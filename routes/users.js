@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
   `;
 
   const queryFoodItems = `
-  SELECT id, name, description, (price/100) as price, thumbnail_photo_url FROM food_items;
+  SELECT id, name, description, CAST((price/100) as numeric(10,2)) as price, thumbnail_photo_url FROM food_items;
   `;
 
   const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
@@ -67,7 +67,7 @@ router.get('/orders', (req, res) => {
     orders.id,
     orders.created_at,
     orders.status,
-    SUM(order_contents.quantity * food_items.price)/100 AS total_price
+    CAST((SUM(order_contents.quantity * food_items.price)/100) as numeric(10,2)) AS total_price
   FROM
     orders
   JOIN
@@ -87,7 +87,7 @@ router.get('/orders', (req, res) => {
         const itemQuery = `SELECT
           food_items.name,
           order_contents.quantity,
-          food_items.price/100 AS price
+          CAST((food_items.price/100) as numeric(10,2)) AS price
         FROM
           order_contents
         JOIN
