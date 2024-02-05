@@ -26,13 +26,13 @@
  <% for (let order of orders) { %>
   <div class="allUsersOrders">
     <div class="order">
-      <p class="orderID">Order # <%= order.id %> </p>
-      <p class="timestamp">Order Placed: <%= order.created_at %></p>
-      <p class="status">Status: <%= order.status %></p>
+      <p class="orderID"><strong>Order ID: </strong>#<%= order.id %> </p>
+      <p class="timestamp"><strong>Placed At: </strong><%= order.created_at %></p>
+      <p class="status"><strong>Status: </strong><%= order.status %></p>
 
       <!-- Display items for each order -->
       <div class="orderItems">
-        <h4>Items:</h4>
+        <p><strong>Items:</strong></p>
         <ul>
           <% order.items.forEach(function(item) { %>
             <li>
@@ -43,10 +43,10 @@
         </div>
         <p class="totalPrice">Order Total: $<%= (order.total_price/100).toFixed(2) %></p>
         <form action="/orders/admin/time" method="POST">
-          <label for="time-to-complete">Time to complete</label>
+          <label for="time-to-complete">Time to complete:</label>
           <input name="timeToComplete" type="number">
           <input type="hidden" name="orderID" value="<%= order.id %>">
-          <button type="submit">Submit</button>
+          <button type="submit">SUBMIT</button>
         </form>
     </div>
   </div>

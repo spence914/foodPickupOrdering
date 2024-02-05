@@ -29,7 +29,7 @@
             <div id="foodDisplay">
               <img src="<%= item.thumbnail_photo_url%>"/>
               <div id ="foodInformation">
-                <p><%= item.name %> $<%= (item.price/100).toFixed(2) %></p>
+                <p class="foodNameAndPrice"><%= item.name %> • $<%= (item.price/100).toFixed(2) %></p>
                 <p class="foodItemDescription"><%= item.description %></p>
               </div>
             </div>

@@ -152,7 +152,7 @@ button:hover {
 
 }
 
-#foodNameAndPrice {
+.foodNameAndPrice {
   font-size: 18pt;
   font-family: 'TT-Norms-Medium';
 }
@@ -226,4 +226,12 @@ li {
 
 .totalPrice {
   margin-top: 10px;
+}
+
+strong {
+  font-family: 'TT-Norms-Medium';
+}
+
+label {
+  font-family: 'TT-Norms-Medium'
 }
