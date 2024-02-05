@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
     .then((data) => {
       if (!data.rows[0]) {
         //  no current order exists
-        console.log("Creating new order");
+        // console.log("Creating new order");
         return db.query(queryCreateNewOrder, [userID])
           .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
@@ -224,12 +224,26 @@ router.get('/cart/:orderID', (req, res) => {
   // if there is no pending order, send your cart is empty message
 
   const orderID = req.params.orderID || 1;
+  let templateVars;
 
   userQueries.getOrders(orderID)
     .then((data) => {
-      const templateVars = { foodItems: data, orderID: orderID };
-      // console.log(templateVars.foodItems[0]);
-      res.render('cart', templateVars);
+      templateVars = { foodItems : data, orderID : orderID };
+      return userQueries.getSubtotal(orderID);
+    })
+    .then((data) => {
+      // if subtotal is undefined, no order, display $0 subtotal
+      if (!data) {
+        templateVars.subtotal = 0;
+      } else {
+        // if data.rows.length > 1, that means there is multiple, we have to iterate and calculate the sum
+        templateVars.subtotal = data.reduce((prev, curr) => {
+          return Number(curr.subtotal) + prev;
+        }, 0);
+        templateVars.subtotal = templateVars.subtotal.toFixed(2);
+        console.log(templateVars.subtotal);
+        res.render('cart', templateVars);
+      }
     });
 });
 
@@ -310,12 +324,41 @@ router.post('/order/:orderID', (req, res) => {
   // console.log("quantity", quantity);
   // console.log("orderID", orderID);
 
+  //  Check cart for existing entries of added item
+  const searchCart = `
+  SELECT * FROM order_contents
+  WHERE order_id = $1
+  AND food_item_id = $2
+  `;
+
   const queryAddToCart = `
   INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
   `;
 
-  db.query(queryAddToCart, [orderID, foodItemID, quantity])
-    .then(() => res.redirect('/'));
+  const queryUpdateCart = `
+  UPDATE order_contents
+  SET quantity = quantity + $1
+  WHERE order_id = $2
+  AND food_item_id = $3
+  `;
+
+  db.query(searchCart, [orderID, foodItemID])
+    .then((data) => {
+      console.log(data.rows);
+      if (data.rows.length === 0) {
+        // food item has no listings in current cart
+        // needs to be added in
+        db.query(queryAddToCart, [orderID, foodItemID, quantity])
+          .then(() => res.redirect('/'));
+      }
+      if (data.rows.length > 0) {
+        // food item has a listing
+        // update quantity
+        db.query(queryUpdateCart, [quantity, orderID, foodItemID])
+          .then(() => res.redirect('/'));
+      }
+    });
+
 
 });
 
