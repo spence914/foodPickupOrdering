@@ -220,31 +220,73 @@ router.post('/orders/admin/time', (req, res) => {
 
 
 // VIEW CART
-router.get('/cart/:orderID', (req, res) => {
-  const orderID = req.params.orderID;
-  let templateVars;
+router.get('/cart', (req, res) => {
+  
+  //
+  const queryCurrentOrder = `
+  SELECT * FROM orders
+  WHERE user_id = $1 AND created_at IS NOT NULL AND placed_at IS NULL
+  `;
 
-  userQueries.getOrders(orderID)
+  const queryCreateNewOrder = `
+  INSERT INTO orders (user_id) VALUES ($1)
+  `;
+
+  const queryFoodItems = `
+  SELECT id, name, description, price, thumbnail_photo_url FROM food_items;
+  `;
+
+  const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
+  console.log("userID", userID);
+
+  db.query(queryCurrentOrder, [userID])
     .then((data) => {
-      templateVars = { foodItems : data, orderID : orderID };
-      return userQueries.getSubtotal(orderID);
-    })
-    .then((data) => {
-      // if subtotal is undefined, display $0 subtotal
-      if (!data) {
-        templateVars.subtotal = 0;
-      } else {
-        // iterate the array of data
-        templateVars.subtotal = data.reduce((prev, curr) => {
-          return Number(curr.subtotal) + prev;
-        }, 0);
-        templateVars.subtotal = templateVars.subtotal.toFixed(2);
-        res.render('cart', templateVars);
+      console.log("first data call", data);
+      if (!data.rows[0]) {
+        console.log("no order exists")
+        //  no current order exists
+        // console.log("Creating new order");
+        return db.query(queryCreateNewOrder, [userID])
+          .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
+      //  current order exists
+      console.log("order exists")
+      return data;
     })
-    .catch((err) => {
-      res.send(err);
+    .then((data) => {
+      console.log("data.rows[0].id", data.rows[0].id);
+      const orderID = data.rows[0].id;
+
+      return orderID;
+    })
+    .then((orderID) => {
+      let templateVars;
+
+      userQueries.getOrders(orderID)
+        .then((data) => {
+          templateVars = { foodItems : data, orderID : orderID };
+          return userQueries.getSubtotal(orderID);
+        })
+        .then((data) => {
+          // if subtotal is undefined, display $0 subtotal
+          if (!data) {
+            templateVars.subtotal = 0;
+          } else {
+            // iterate the array of data
+            templateVars.subtotal = data.reduce((prev, curr) => {
+              return Number(curr.subtotal) + prev;
+            }, 0);
+            templateVars.subtotal = templateVars.subtotal.toFixed(2);
+            res.render('cart', templateVars);
+          }
+        })
+        .catch((err) => {
+          res.send(err);
+        });
     });
+  //
+
+  
 });
 
 // DELETE ORDER IN CART
@@ -252,7 +294,7 @@ router.post('/cancelOrder/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   userQueries.cancelCartOrder(orderID)
     .then(() => {
-      res.redirect(`/cart/${orderID}`);
+      res.redirect(`/cart`);
     })
     .catch((err) => {
       res.send(err);
@@ -288,7 +330,7 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
   const foodItemName = req.body.foodItemName;
   userQueries.removeFoodItem(foodItemName, orderID)
     .then(() => {
-      res.redirect(`/cart/${orderID}`);
+      res.redirect(`/cart`);
     })
     .catch((err) => {
       res.send(err);
@@ -302,7 +344,7 @@ router.post('/updateQuantity/:orderID', (req, res) => {
 
   userQueries.updateQuantity(newQuantity, orderContentId)
     .then(() => {
-      res.redirect(`/cart/${orderID}`);
+      res.redirect(`/cart`);
     })
     .catch((err) => {
       res.send(err);
