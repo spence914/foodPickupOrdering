@@ -74,6 +74,7 @@ router.get('/orders/users', (req, res) => {
     orders.id,
     orders.created_at,
     orders.status,
+    orders.placed_at,
     SUM(order_contents.quantity * food_items.price) AS total_price
   FROM
     orders
@@ -83,12 +84,15 @@ router.get('/orders/users', (req, res) => {
     food_items ON food_items.id = order_contents.food_item_id
   WHERE
     orders.user_id = $1
+  AND
+    orders.placed_at IS NOT NULL
   GROUP BY
     orders.id
   ORDER BY orders.created_at DESC;`;
 
   db.query(queryString, [userID])
     .then(orderData => {
+      console.log("orderData", orderData);
       const orders = orderData.rows;
       // Map each order to a promise that fetches its items
       const itemPromises = orders.map(order => {
