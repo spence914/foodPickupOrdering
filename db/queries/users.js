@@ -67,6 +67,7 @@ const cancelCartOrder = (orderID) => {
   const queryString = `
     DELETE FROM orders
     WHERE id = $1
+    AND placed_at IS NULL
     RETURNING *;
   `;
 
@@ -100,6 +101,7 @@ const submitOrder = (orderID) => {
     UPDATE orders
     SET placed_at = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
     WHERE id = $1
+    AND placed_at IS NULL
     RETURNING *;
   `;
 
