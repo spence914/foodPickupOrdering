@@ -241,6 +241,9 @@ router.get('/cart/:orderID', (req, res) => {
         templateVars.subtotal = templateVars.subtotal.toFixed(2);
         res.render('cart', templateVars);
       }
+    })
+    .catch((err) => {
+      res.send(err);
     });
 });
 
@@ -250,6 +253,9 @@ router.post('/cancelOrder/:orderID', (req, res) => {
   userQueries.cancelCartOrder(orderID)
     .then(() => {
       res.redirect(`/cart/${orderID}`);
+    })
+    .catch((err) => {
+      res.send(err);
     });
 });
 
@@ -270,6 +276,9 @@ router.post('/submitOrder/:orderID', (req, res) => {
           //   .then((message) => console.log(message.sid));
           res.redirect('/orders');
         });
+    })
+    .catch((err) => {
+      res.send(err);
     });
 });
 
@@ -280,6 +289,9 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
   userQueries.removeFoodItem(foodItemName, orderID)
     .then(() => {
       res.redirect(`/cart/${orderID}`);
+    })
+    .catch((err) => {
+      res.send(err);
     });
 });
 
@@ -291,6 +303,9 @@ router.post('/updateQuantity/:orderID', (req, res) => {
   userQueries.updateQuantity(newQuantity, orderContentId)
     .then(() => {
       res.redirect(`/cart/${orderID}`);
+    })
+    .catch((err) => {
+      res.send(err);
     });
 });
 
