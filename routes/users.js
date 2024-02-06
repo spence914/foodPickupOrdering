@@ -221,9 +221,7 @@ router.post('/orders/admin/time', (req, res) => {
 
 // VIEW CART
 router.get('/cart/:orderID', (req, res) => {
-  // if there is no pending order, send your cart is empty message
-
-  const orderID = req.params.orderID || 1;
+  const orderID = req.params.orderID;
   let templateVars;
 
   userQueries.getOrders(orderID)
@@ -232,16 +230,15 @@ router.get('/cart/:orderID', (req, res) => {
       return userQueries.getSubtotal(orderID);
     })
     .then((data) => {
-      // if subtotal is undefined, no order, display $0 subtotal
+      // if subtotal is undefined, display $0 subtotal
       if (!data) {
         templateVars.subtotal = 0;
       } else {
-        // if data.rows.length > 1, that means there is multiple, we have to iterate and calculate the sum
+        // iterate the array of data
         templateVars.subtotal = data.reduce((prev, curr) => {
           return Number(curr.subtotal) + prev;
         }, 0);
         templateVars.subtotal = templateVars.subtotal.toFixed(2);
-        console.log(templateVars.subtotal);
         res.render('cart', templateVars);
       }
     });
@@ -251,8 +248,7 @@ router.get('/cart/:orderID', (req, res) => {
 router.post('/cancelOrder/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   userQueries.cancelCartOrder(orderID)
-    .then((data) => {
-      // console.log('successfully deleted order', data);
+    .then(() => {
       res.redirect(`/cart/${orderID}`);
     });
 });
@@ -263,16 +259,17 @@ router.post('/submitOrder/:orderID', (req, res) => {
   userQueries.submitOrder(orderID)
     .then(() => {
       //  Leave commented to save $$
-      // userQueries.getOwnerPhone().then((phoneNumber) => {
-      //   client.messages
-      //     .create({
-      //       body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
-      //       to: phoneNumber, // Text your number
-      //       from: '+14085604628', // From a valid Twilio number
-      //     })
-      //     .then((message) => console.log(message.sid));
-      //   res.redirect('/orders');
-      // });
+      userQueries.getOwnerPhone()
+        .then((phoneNumber) => {
+          // client.messages
+          //   .create({
+          //     body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
+          //     to: phoneNumber, // Text your number
+          //     from: '+14085604628', // From a valid Twilio number
+          //   })
+          //   .then((message) => console.log(message.sid));
+          res.redirect('/orders');
+        });
     });
 });
 
@@ -281,12 +278,9 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   const foodItemName = req.body.foodItemName;
   userQueries.removeFoodItem(foodItemName, orderID)
-    .then((data) => {
-      // console.log('deleted foodItem from order', data)
-
+    .then(() => {
       res.redirect(`/cart/${orderID}`);
     });
-
 });
 
 router.post('/updateQuantity/:orderID', (req, res) => {
@@ -295,8 +289,7 @@ router.post('/updateQuantity/:orderID', (req, res) => {
   const orderContentId = req.body.order_contents_id;
 
   userQueries.updateQuantity(newQuantity, orderContentId)
-    .then((data) => {
-      // console.log(data);
+    .then(() => {
       res.redirect(`/cart/${orderID}`);
     });
 });
