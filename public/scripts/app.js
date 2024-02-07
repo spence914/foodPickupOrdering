@@ -18,3 +18,5 @@ $('.update-form').submit(function(e) {
     }
   });
 });
+
+// Remove foodItem
