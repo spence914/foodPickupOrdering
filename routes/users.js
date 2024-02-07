@@ -95,7 +95,7 @@ router.get('/orders/users', (req, res) => {
 
   db.query(queryString, [userID])
     .then(orderData => {
-      console.log("orderData", orderData);
+      // console.log("orderData", orderData);
       const orders = orderData.rows;
       // Map each order to a promise that fetches its items
       const itemPromises = orders.map(order => {
@@ -230,7 +230,7 @@ router.post('/orders/admin/time', (req, res) => {
 
 // VIEW CART
 router.get('/cart', (req, res) => {
-  
+
   //
   const queryCurrentOrder = `
   SELECT * FROM orders
@@ -242,25 +242,25 @@ router.get('/cart', (req, res) => {
   `;
 
   const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
-  console.log("userID", userID);
+  // console.log("userID", userID);
   let templateVars = {};
 
   db.query(queryCurrentOrder, [userID])
     .then((data) => {
-      console.log("first data call", data);
+      // console.log("first data call", data);
       if (!data.rows[0]) {
-        console.log("no order exists");
+        // console.log("no order exists");
         //  no current order exists
         // console.log("Creating new order");
         return db.query(queryCreateNewOrder, [userID]);
         // .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
       //  current order exists
-      console.log("order exists");
+      // console.log("order exists");
       return data;
     })
     .then((data) => {
-      console.log("data.rows[0].id", data.rows[0].id);
+      // console.log("data.rows[0].id", data.rows[0].id);
       const orderID = data.rows[0].id;
       templateVars.orderID = orderID;
       return userQueries.getOrders(orderID);
@@ -288,7 +288,7 @@ router.get('/cart', (req, res) => {
     // });
   //
 
-  
+
 });
 
 // DELETE ORDER IN CART
@@ -397,7 +397,7 @@ router.post('/order/:orderID', (req, res) => {
 
   db.query(searchCart, [orderID, foodItemID])
     .then((data) => {
-      console.log(data.rows);
+      // console.log(data.rows);
       if (data.rows.length === 0) {
         // food item has no listings in current cart
         // needs to be added in

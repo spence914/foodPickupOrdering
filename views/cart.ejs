@@ -34,10 +34,9 @@
               </div>
             </div>
             <div class="editCart">
-              <form action="/updateQuantity/<%= orderID %>" method="POST">
-                <input type="number" id="quantity" name="quantity" value="<%= item.quantity %>" step="1" min="1"/>
+              <form class="update-form" action="/updateQuantity/<%= orderID %>" method="POST">
+                <input type="number" class="quantityAjax" id="quantity" name="quantity" value="<%= item.quantity %>" step="1" min="1"/>
                 <input type="hidden" name="order_contents_id" value="<%= item.order_contentsid %>"/>
-                <button type="submit">UPDATE</button>
               </form>
               <form action="/removeFoodItem/<%= orderID%>" method="POST">
                 <input type="hidden" name="foodItemName" value="<%= item.name%>">
@@ -48,9 +47,11 @@
         <% } %>
       <% } %>
       <!-- END OF FOOD ITEMS LIST -->
-        
+
         <div class="confirmationBar">
-          <p><strong>SUBTOTAL : </strong>$<%= subtotal %></p>
+          <div id="subtotalTarget">
+            <p><strong>SUBTOTAL : </strong>$<%= subtotal %></p>
+          </div>
           <div>
             <form action="/users/submitOrder/<%= orderID %>" method="POST">
               <button type="submit">SUBMIT</button>
