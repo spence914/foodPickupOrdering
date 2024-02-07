@@ -28,6 +28,7 @@ router.get('/', (req, res) => {
 
   const queryCreateNewOrder = `
   INSERT INTO orders (user_id) VALUES ($1)
+  RETURNING *;
   `;
 
   const queryFoodItems = `
@@ -42,7 +43,7 @@ router.get('/', (req, res) => {
         //  no current order exists
         // console.log("Creating new order");
         return db.query(queryCreateNewOrder, [userID])
-          .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
+          // .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
       //  current order exists
       return data;
@@ -53,7 +54,7 @@ router.get('/', (req, res) => {
       db.query(queryFoodItems)
         .then((foodItems) => {
           // console.log("foodItems", foodItems);
-          res.render('index', { foodItems: foodItems.rows, orderID })
+          res.render('index', { foodItems: foodItems.rows, orderID });
         });
     });
 });
@@ -63,7 +64,9 @@ router.get('/orders', (req, res) => {
   const userID = req.cookies.user_id;
   if (userID === '1') {
     res.redirect('/orders/admin');
-  } res.redirect('/orders/users');
+    return;
+  }
+  res.redirect('/orders/users');
 });
 
 router.get('/orders/users', (req, res) => {
@@ -207,14 +210,16 @@ router.post('/orders/admin/time', (req, res) => {
           to: userPhone, // Text your number
           from: '+14085604628', // From a valid Twilio number
         })
-        .then((message) => console.log(message.sid));
+        .then((message) => console.log(message.sid))
+        .catch((err) => console.log(err));
       setTimeout(() => {
         client.messages
           .create({
             body: `Your food is ready!`,
             to: userPhone, // Text your number
             from: '+14085604628', // From a valid Twilio number
-          });
+          })
+          .catch((err) => console.log(err));
       }, timeToComplete * 60000);
     });
 
@@ -236,58 +241,51 @@ router.get('/cart', (req, res) => {
   INSERT INTO orders (user_id) VALUES ($1)
   `;
 
-  const queryFoodItems = `
-  SELECT id, name, description, price, thumbnail_photo_url FROM food_items;
-  `;
-
   const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
   console.log("userID", userID);
+  let templateVars = {};
 
   db.query(queryCurrentOrder, [userID])
     .then((data) => {
       console.log("first data call", data);
       if (!data.rows[0]) {
-        console.log("no order exists")
+        console.log("no order exists");
         //  no current order exists
         // console.log("Creating new order");
-        return db.query(queryCreateNewOrder, [userID])
-          .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
+        return db.query(queryCreateNewOrder, [userID]);
+        // .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
       //  current order exists
-      console.log("order exists")
+      console.log("order exists");
       return data;
     })
     .then((data) => {
       console.log("data.rows[0].id", data.rows[0].id);
       const orderID = data.rows[0].id;
-
-      return orderID;
+      templateVars.orderID = orderID;
+      return userQueries.getOrders(orderID);
     })
-    .then((orderID) => {
-      let templateVars;
-
-      userQueries.getOrders(orderID)
-        .then((data) => {
-          templateVars = { foodItems : data, orderID : orderID };
-          return userQueries.getSubtotal(orderID);
-        })
-        .then((data) => {
-          // if subtotal is undefined, display $0 subtotal
-          if (!data) {
-            templateVars.subtotal = 0;
-          } else {
-            // iterate the array of data
-            templateVars.subtotal = data.reduce((prev, curr) => {
-              return Number(curr.subtotal) + prev;
-            }, 0);
-            templateVars.subtotal = templateVars.subtotal.toFixed(2);
-            res.render('cart', templateVars);
-          }
-        })
-        .catch((err) => {
-          res.send(err);
-        });
+    .then((data) => {
+      templateVars.foodItems = data;
+      return userQueries.getSubtotal(templateVars.orderID);
+    })
+    .then((data) => {
+      // if subtotal is undefined, display $0 subtotal
+      if (!data) {
+        templateVars.subtotal = 0;
+      } else {
+        // iterate the array of data
+        templateVars.subtotal = data.reduce((prev, curr) => {
+          return Number(curr.subtotal) + prev;
+        }, 0);
+        templateVars.subtotal = templateVars.subtotal.toFixed(2);
+        res.render('cart', templateVars);
+      }
+    })
+    .catch((err) => {
+      res.send(err);
     });
+    // });
   //
 
   
@@ -313,13 +311,14 @@ router.post('/submitOrder/:orderID', (req, res) => {
       //  Leave commented to save $$
       userQueries.getOwnerPhone()
         .then((phoneNumber) => {
-          // client.messages
-          //   .create({
-          //     body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
-          //     to: phoneNumber, // Text your number
-          //     from: '+14085604628', // From a valid Twilio number
-          //   })
-          //   .then((message) => console.log(message.sid));
+          client.messages
+            .create({
+              body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
+              to: phoneNumber, // Text your number
+              from: '+14085604628', // From a valid Twilio number
+            })
+            .then((message) => console.log(message.sid))
+            .catch((err) => console.log(err));
           res.redirect('/orders');
         });
     })
