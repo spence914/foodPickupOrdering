@@ -19,4 +19,25 @@ $('.update-form').submit(function(e) {
   });
 });
 
+$('.remove-btn').on('click', function() {
+  $(this).closest(".removeItemAjax").trigger("submit");
+  const $foodItem = $(this).closest('.foodItem');
+  $foodItem.hide();
+  $("#subtotalTarget").load("/cart #subtotalTarget");
+});
+
 // Remove foodItem
+$('.removeItemAjax').submit(function(e) {
+  e.preventDefault();
+  const postURL = $(this).attr("action");
+  const values = $(this).serialize();
+
+  $.ajax({
+    type: "POST",
+    url: postURL,
+    data: values,
+    success: (res) => {
+      console.log("success");
+    }
+  });
+});
