@@ -238,7 +238,7 @@ router.get('/cart', (req, res) => {
   `;
 
   const queryCreateNewOrder = `
-  INSERT INTO orders (user_id) VALUES ($1)
+  INSERT INTO orders (user_id) VALUES ($1) RETURNING *
   `;
 
   const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
