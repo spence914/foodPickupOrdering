@@ -401,13 +401,13 @@ router.post('/order/:orderID', (req, res) => {
       if (data.rows.length === 0) {
         // food item has no listings in current cart
         // needs to be added in
-        db.query(queryAddToCart, [orderID, foodItemID, quantity])
+        db.query(queryAddToCart, [orderID, foodItemID, quantity || 1])
           .then(() => res.redirect('/'));
       }
       if (data.rows.length > 0) {
         // food item has a listing
         // update quantity
-        db.query(queryUpdateCart, [quantity, orderID, foodItemID])
+        db.query(queryUpdateCart, [quantity || 1, orderID, foodItemID])
           .then(() => res.redirect('/'));
       }
     });
