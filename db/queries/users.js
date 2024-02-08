@@ -304,6 +304,17 @@ const updateOrdersQuery = (timeToComplete, orderID) => {
 
 };
 
+const getUserPhone = (orderID) => {
+  const userInfoQuery = `SELECT users.phone_number FROM users JOIN orders ON orders.user_id = users.id WHERE orders.id = $1`;
+
+  return db.query(userInfoQuery, [orderID])
+    .then((data) => {
+      return data.rows;
+    });
+
+
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -321,6 +332,7 @@ module.exports = {
   updateCart,
   queryAllOrders,
   getOrdersAdmin,
-  updateOrdersQuery
+  updateOrdersQuery,
+  getUserPhone
 };
 

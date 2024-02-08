@@ -101,15 +101,16 @@ router.get('/admin', (req, res) => {
 });
 
 router.post('/admin/time', (req, res) => {
-  const queryString = `UPDATE orders SET status = 'completed', time_to_complete = $1 WHERE id = $2`;
+
   const orderID = req.body.orderID;
   const timeToComplete = req.body.timeToComplete;
 
   userQueries.updateOrdersQuery(timeToComplete, orderID);
-  const userInfoQuery = `SELECT users.phone_number FROM users JOIN orders ON orders.user_id = users.id WHERE orders.id = $1`;
-  db.query(userInfoQuery, [orderID])
+
+
+  userQueries.getUserPhone(orderID)
     .then(data => {
-      let userPhone = data.rows[0].phone_number;
+      let userPhone = data[0].phone_number;
       client.messages
         .create({
           body: `Your food is being prepared and will be ready in ${timeToComplete} minutes`,
