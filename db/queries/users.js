@@ -294,6 +294,16 @@ const getOrdersAdmin = () => {
     });
 };
 
+const updateOrdersQuery = (timeToComplete, orderID) => {
+  const queryString = `UPDATE orders SET status = 'completed', time_to_complete = $1 WHERE id = $2`;
+
+  return db.query(queryString, [timeToComplete, orderID])
+    .then((data) => {
+      return data.rows;
+    });
+
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -310,6 +320,7 @@ module.exports = {
   addToCart,
   updateCart,
   queryAllOrders,
-  getOrdersAdmin
+  getOrdersAdmin,
+  updateOrdersQuery
 };
 

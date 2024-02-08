@@ -105,8 +105,7 @@ router.post('/admin/time', (req, res) => {
   const orderID = req.body.orderID;
   const timeToComplete = req.body.timeToComplete;
 
-  db.query(queryString, [timeToComplete, orderID]);
-
+  userQueries.updateOrdersQuery(timeToComplete, orderID);
   const userInfoQuery = `SELECT users.phone_number FROM users JOIN orders ON orders.user_id = users.id WHERE orders.id = $1`;
   db.query(userInfoQuery, [orderID])
     .then(data => {
