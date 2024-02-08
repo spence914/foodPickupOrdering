@@ -183,8 +183,6 @@ const getCart = (userID) => {
   RETURNING *
   `;
 
-
-
   return db.query(queryCurrentOrder, [userID])
     .then((data) => {
       if (!data.rows[0]) {
@@ -236,10 +234,65 @@ const updateCart = (quantity, orderID, foodItemID) => {
   AND food_item_id = $3
   `;
 
-  return db.query(queryUpdateCart, [quantity || 1, orderID, foodItemID]);
+  return db.query(queryUpdateCart, [quantity || 1, orderID, foodItemID]).catch((err) => {
+    console.log(err.message);
+  });
 
 };
 
+const queryAllOrders = (userID) => {
+
+  const queryString = `SELECT
+  orders.id,
+  orders.created_at,
+  orders.status,
+  orders.placed_at,
+  SUM(order_contents.quantity * food_items.price) AS total_price
+FROM
+  orders
+JOIN
+  order_contents ON orders.id = order_contents.order_id
+JOIN
+  food_items ON food_items.id = order_contents.food_item_id
+WHERE
+  orders.user_id = $1
+AND
+  orders.placed_at IS NOT NULL
+GROUP BY
+  orders.id
+ORDER BY orders.created_at DESC;`;
+
+
+  return db.query(queryString, [userID])
+    .then((data) => {
+      return data.rows;
+    });
+
+};
+
+const getOrdersAdmin = () => {
+  const queryString = `SELECT
+    orders.id,
+    orders.created_at,
+    orders.status,
+    SUM(order_contents.quantity * food_items.price) AS total_price
+  FROM
+    orders
+  JOIN
+    order_contents ON orders.id = order_contents.order_id
+  JOIN
+    food_items ON food_items.id = order_contents.food_item_id
+  WHERE
+    orders.status <> 'completed'
+  GROUP BY
+    orders.id
+  ORDER BY orders.created_at DESC;`;
+
+  return db.query(queryString)
+    .then((data) => {
+      return data.rows;
+    });
+};
 
 module.exports = {
   getUsers,
@@ -255,6 +308,8 @@ module.exports = {
   getCart,
   searchCart,
   addToCart,
-  updateCart
+  updateCart,
+  queryAllOrders,
+  getOrdersAdmin
 };
 

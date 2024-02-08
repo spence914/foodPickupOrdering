@@ -19,29 +19,10 @@ router.get('/', (req, res) => {
 router.get('/users', (req, res) => {
   const userID = req.cookies.user_id;
 
-  const queryString = `SELECT
-    orders.id,
-    orders.created_at,
-    orders.status,
-    orders.placed_at,
-    SUM(order_contents.quantity * food_items.price) AS total_price
-  FROM
-    orders
-  JOIN
-    order_contents ON orders.id = order_contents.order_id
-  JOIN
-    food_items ON food_items.id = order_contents.food_item_id
-  WHERE
-    orders.user_id = $1
-  AND
-    orders.placed_at IS NOT NULL
-  GROUP BY
-    orders.id
-  ORDER BY orders.created_at DESC;`;
 
-  db.query(queryString, [userID])
+  userQueries.queryAllOrders(userID)
     .then(orderData => {
-      const orders = orderData.rows;
+      const orders = orderData;
       // Map each order to a promise that fetches its items
       const itemPromises = orders.map(order => {
         const itemQuery = `SELECT
@@ -55,10 +36,11 @@ router.get('/users', (req, res) => {
         WHERE
           order_contents.order_id = $1;`;
 
-        return db.query(itemQuery, [order.id]).then(itemData => {
-          order.items = itemData.rows; // Assign the fetched items to the order
-          return order; // Return the updated order
-        });
+        return db.query(itemQuery, [order.id])
+          .then(itemData => {
+            order.items = itemData.rows; // Assign the fetched items to the order
+            return order; // Return the updated order
+          });
       });
 
       // Wait for all item fetches to complete
@@ -81,26 +63,9 @@ router.get('/users', (req, res) => {
 // ADMIN ORDERS PAGE
 router.get('/admin', (req, res) => {
 
-  const queryString = `SELECT
-    orders.id,
-    orders.created_at,
-    orders.status,
-    SUM(order_contents.quantity * food_items.price) AS total_price
-  FROM
-    orders
-  JOIN
-    order_contents ON orders.id = order_contents.order_id
-  JOIN
-    food_items ON food_items.id = order_contents.food_item_id
-  WHERE
-    orders.status <> 'completed'
-  GROUP BY
-    orders.id
-  ORDER BY orders.created_at DESC;`;
-
-  db.query(queryString)
+  userQueries.getOrdersAdmin()
     .then(orderData => {
-      const orders = orderData.rows;
+      const orders = orderData;
       // Map each order to a promise that fetches its items
       const itemPromises = orders.map(order => {
         const itemQuery = `SELECT
