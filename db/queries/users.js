@@ -315,6 +315,24 @@ const getUserPhone = (orderID) => {
 
 };
 
+const orderItemContentsQuery = (orderID) => {
+  const itemQuery = `SELECT
+  food_items.name,
+  order_contents.quantity,
+  food_items.price AS price
+FROM
+  order_contents
+JOIN
+  food_items ON food_items.id = order_contents.food_item_id
+WHERE
+  order_contents.order_id = $1;`;
+
+  return db.query(itemQuery, [orderID])
+    .then((data) => {
+      return data.rows;
+    });
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -333,6 +351,7 @@ module.exports = {
   queryAllOrders,
   getOrdersAdmin,
   updateOrdersQuery,
-  getUserPhone
+  getUserPhone,
+  orderItemContentsQuery
 };
 

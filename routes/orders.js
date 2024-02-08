@@ -25,20 +25,11 @@ router.get('/users', (req, res) => {
       const orders = orderData;
       // Map each order to a promise that fetches its items
       const itemPromises = orders.map(order => {
-        const itemQuery = `SELECT
-          food_items.name,
-          order_contents.quantity,
-          food_items.price AS price
-        FROM
-          order_contents
-        JOIN
-          food_items ON food_items.id = order_contents.food_item_id
-        WHERE
-          order_contents.order_id = $1;`;
 
-        return db.query(itemQuery, [order.id])
+        let orderID = order.id;
+        return userQueries.orderItemContentsQuery(orderID)
           .then(itemData => {
-            order.items = itemData.rows; // Assign the fetched items to the order
+            order.items = itemData; // Assign the fetched items to the order
             return order; // Return the updated order
           });
       });
@@ -68,19 +59,10 @@ router.get('/admin', (req, res) => {
       const orders = orderData;
       // Map each order to a promise that fetches its items
       const itemPromises = orders.map(order => {
-        const itemQuery = `SELECT
-          food_items.name,
-          order_contents.quantity,
-          food_items.price AS price
-        FROM
-          order_contents
-        JOIN
-          food_items ON food_items.id = order_contents.food_item_id
-        WHERE
-          order_contents.order_id = $1;`;
 
-        return db.query(itemQuery, [order.id]).then(itemData => {
-          order.items = itemData.rows; // Assign the fetched items to the order
+        let orderID = order.id;
+        return userQueries.orderItemContentsQuery(orderID).then(itemData => {
+          order.items = itemData; // Assign the fetched items to the order
           return order; // Return the updated order
         });
       });
