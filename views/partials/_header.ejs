@@ -6,7 +6,7 @@
     <div class="header_title">FOOD DELIVERY</div>
     <div class="header_right">
       <i class="fa-solid fa-user" id="loginButton"></i>
-     <a href="/orders"> <i class="fa-solid fa-receipt"></i></a>
+      <a href="/orders"> <i class="fa-solid fa-receipt"></i></a>
       <a href='/cart'><i class="fa-solid fa-cart-shopping"></i></a>
     </div>
   </nav>
@@ -17,7 +17,7 @@
   document.getElementById('loginButton').addEventListener('click', function() {
     const userID = prompt("Please enter your User ID:");
     if (userID) {
-      window.location.href = `/login/${userID}`;
+      window.location.href = `/users/login/${userID}`;
     }
   });
   </script>
