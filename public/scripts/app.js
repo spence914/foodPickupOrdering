@@ -1,11 +1,13 @@
 $(document).ready(function() {
   
-  // Client facing scripts here
+  // ADJUST QUANTITY IN CART
   $('.quantityAjax').on("keyup keydown change", function() {
     $(".update-form").trigger("submit");
-    $("#subtotalTarget").load("/cart #subtotalTarget");
+    setTimeout(() => {
+      $("#subtotalTarget").load("/cart #subtotalTarget");
+    }, 5);
   });
-
+  
   $('.update-form').submit(function(e) {
     e.preventDefault();
     const postUrl = $(this).attr("action");
@@ -19,14 +21,15 @@ $(document).ready(function() {
         console.log("success");
       }
     });
-    
   });
 
   $('.remove-btn').on('click', function() {
     $(this).closest(".removeItemAjax").trigger("submit");
     const $foodItem = $(this).closest('.foodItem');
     $foodItem.hide();
-    $("#subtotalTarget").load("/cart #subtotalTarget");
+    setTimeout(() => {
+      $("#subtotalTarget").load("/cart #subtotalTarget");
+    }, 5);
   });
 
   // Remove foodItem
