@@ -107,19 +107,11 @@ router.post('/:orderID', (req, res) => {
   const quantity = req.body.quantity;
   const orderID = req.params.orderID;
 
-  const queryAddToCart = `
-  INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
-  `;
 
-  const queryUpdateCart = `
-  UPDATE order_contents
-  SET quantity = quantity + $1
-  WHERE order_id = $2
-  AND food_item_id = $3
-  `;
 
-  userQueries.searchCart(foodItemID, orderID)
+  userQueries.searchCart(orderID, foodItemID)
     .then((data) => {
+      console.log(data);
       if (data.length === 0) {
         // Food item not already in cart
         userQueries.addToCart(orderID, foodItemID, quantity)
@@ -127,7 +119,7 @@ router.post('/:orderID', (req, res) => {
       }
       if (data.length > 0) {
         // Food item already in cart
-        db.query(queryUpdateCart, [quantity || 1, orderID, foodItemID])
+        userQueries.updateCart(quantity, orderID, foodItemID)
           .then(() => res.redirect('/'));
       }
     });

@@ -222,8 +222,21 @@ const addToCart = (orderID, foodItemID, quantity) => {
   return db.query(queryAddToCart, [orderID, foodItemID, quantity || 1])
     .then((data) => {
       return data.rows;
+    })
+    .catch((err) => {
+      console.log(err.message);
     });
+};
 
+const updateCart = (quantity, orderID, foodItemID) => {
+  const queryUpdateCart = `
+  UPDATE order_contents
+  SET quantity = quantity + $1
+  WHERE order_id = $2
+  AND food_item_id = $3
+  `;
+
+  return db.query(queryUpdateCart, [quantity || 1, orderID, foodItemID]);
 
 };
 
@@ -241,6 +254,7 @@ module.exports = {
   getOwnerPhone,
   getCart,
   searchCart,
-  addToCart
+  addToCart,
+  updateCart
 };
 
