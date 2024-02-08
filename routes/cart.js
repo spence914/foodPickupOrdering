@@ -7,30 +7,10 @@ const client = require('./twilio-api');
 
 // VIEW CART
 router.get('/', (req, res) => {
-
-  const queryCurrentOrder = `
-  SELECT * FROM orders
-  WHERE user_id = $1 AND created_at IS NOT NULL AND placed_at IS NULL
-  `;
-
-  const queryCreateNewOrder = `
-  INSERT INTO orders (user_id) VALUES ($1)
-  RETURNING *
-  `;
-
-  const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
-
   let templateVars = {};
+  const userID = req.cookies.user_id || 1;
 
-  db.query(queryCurrentOrder, [userID])
-    .then((data) => {
-      if (!data.rows[0]) {
-        //  No order exists
-        return db.query(queryCreateNewOrder, [userID]);
-      }
-      //  A current order exists
-      return data;
-    })
+  userQueries.getCart(userID)
     .then((data) => {
       const orderID = data.rows[0].id;
       templateVars.orderID = orderID;

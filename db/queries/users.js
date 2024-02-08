@@ -171,6 +171,32 @@ const getOwnerPhone = () => {
     });
 };
 
+const getCart = (userID) => {
+
+  const queryCurrentOrder = `
+  SELECT * FROM orders
+  WHERE user_id = $1 AND created_at IS NOT NULL AND placed_at IS NULL
+  `;
+
+  const queryCreateNewOrder = `
+  INSERT INTO orders (user_id) VALUES ($1)
+  RETURNING *
+  `;
+
+
+
+  return db.query(queryCurrentOrder, [userID])
+    .then((data) => {
+      if (!data.rows[0]) {
+        //  No order exists
+        return db.query(queryCreateNewOrder, [userID]);
+      }
+      //  A current order exists
+      return data;
+    });
+
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -181,5 +207,7 @@ module.exports = {
   removeFoodItem,
   updateQuantity,
   getSubtotal,
-  getOwnerPhone
+  getOwnerPhone,
+  getCart
 };
+
