@@ -35,6 +35,10 @@ app.use(cookieParser());
 const userApiRoutes = require('./routes/users-api');
 const widgetApiRoutes = require('./routes/widgets-api');
 const usersRoutes = require('./routes/users');
+const indexRoutes = require('./routes/index');
+const cartRoutes = require('./routes/cart');
+const ordersRoutes = require('./routes/orders');
+
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
@@ -43,7 +47,9 @@ app.use('/api/users', userApiRoutes);
 app.use('/api/widgets', widgetApiRoutes);
 app.use('/users', usersRoutes);
 // Note: mount other resources here, using the same pattern above
-app.use('/', usersRoutes); // Phil made this
+app.use('/', indexRoutes);
+app.use('/cart', cartRoutes);
+app.use('/orders', ordersRoutes);
 
 // Home page
 // Warning: avoid creating more routes in this file!
