@@ -197,6 +197,37 @@ const getCart = (userID) => {
 
 };
 
+const searchCart = (orderID, foodItemID) => {
+  const searchCart = `
+  SELECT * FROM order_contents
+  WHERE order_id = $1
+  AND food_item_id = $2
+  `;
+
+  return db.query(searchCart, [orderID, foodItemID])
+    .then((data) => {
+      return data.rows;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+
+};
+
+const addToCart = (orderID, foodItemID, quantity) => {
+  const queryAddToCart = `
+  INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
+  `;
+
+  return db.query(queryAddToCart, [orderID, foodItemID, quantity || 1])
+    .then((data) => {
+      return data.rows;
+    });
+
+
+};
+
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -208,6 +239,8 @@ module.exports = {
   updateQuantity,
   getSubtotal,
   getOwnerPhone,
-  getCart
+  getCart,
+  searchCart,
+  addToCart
 };
 

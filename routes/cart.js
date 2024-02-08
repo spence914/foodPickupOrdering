@@ -107,13 +107,6 @@ router.post('/:orderID', (req, res) => {
   const quantity = req.body.quantity;
   const orderID = req.params.orderID;
 
-  //  Check cart for existing entries of added item
-  const searchCart = `
-  SELECT * FROM order_contents
-  WHERE order_id = $1
-  AND food_item_id = $2
-  `;
-
   const queryAddToCart = `
   INSERT INTO order_contents (order_id, food_item_id, quantity) VALUES ($1, $2, $3)
   `;
@@ -125,14 +118,14 @@ router.post('/:orderID', (req, res) => {
   AND food_item_id = $3
   `;
 
-  db.query(searchCart, [orderID, foodItemID])
+  userQueries.searchCart(foodItemID, orderID)
     .then((data) => {
-      if (data.rows.length === 0) {
+      if (data.length === 0) {
         // Food item not already in cart
-        db.query(queryAddToCart, [orderID, foodItemID, quantity || 1])
+        userQueries.addToCart(orderID, foodItemID, quantity)
           .then(() => res.redirect('/'));
       }
-      if (data.rows.length > 0) {
+      if (data.length > 0) {
         // Food item already in cart
         db.query(queryUpdateCart, [quantity || 1, orderID, foodItemID])
           .then(() => res.redirect('/'));
