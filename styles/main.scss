@@ -135,6 +135,13 @@ button:hover {
   cursor: pointer;
 }
 
+button:focus {
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
 #foodDisplay {
   display: flex;
   flex-direction: row;
