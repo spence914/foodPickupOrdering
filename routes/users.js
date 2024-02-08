@@ -7,14 +7,10 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../db/connection');
-const { Template } = require('ejs');
-const userQueries = require('../db/queries/users');
 
 // USER LOGIN
 router.get('/login/:id', (req, res) => {
   // using encrypted cookies
-  //req.session.user_id = req.params.id;
 
   // or using plain-text cookies
   res.cookie('user_id', req.params.id);

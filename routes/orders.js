@@ -41,7 +41,6 @@ router.get('/users', (req, res) => {
 
   db.query(queryString, [userID])
     .then(orderData => {
-      // console.log("orderData", orderData);
       const orders = orderData.rows;
       // Map each order to a promise that fetches its items
       const itemPromises = orders.map(order => {
@@ -67,7 +66,6 @@ router.get('/users', (req, res) => {
     })
     .then(ordersWithItems => {
       // after all orders have been populated with items, ready to render
-      // console.log(ordersWithItems);
       let orderID;
 
       for (const order of ordersWithItems) {
@@ -126,7 +124,6 @@ router.get('/admin', (req, res) => {
     })
     .then(ordersWithItems => {
       // after all orders have been populated with items, ready to render
-      // console.log(ordersWithItems);
       let orderID;
 
       for (const order of ordersWithItems) {

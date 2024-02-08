@@ -19,25 +19,19 @@ router.get('/', (req, res) => {
   `;
 
   const userID = req.cookies.user_id || 1; // set default value to 1 incase no cookie exists
-  // console.log("userID", userID);
+
   let templateVars = {};
 
   db.query(queryCurrentOrder, [userID])
     .then((data) => {
-      // console.log("first data call", data);
       if (!data.rows[0]) {
-        // console.log("no order exists");
-        //  no current order exists
-        console.log("Creating new order");
+        //  No order exists
         return db.query(queryCreateNewOrder, [userID]);
-        // .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
       }
-      //  current order exists
-      // console.log("order exists");
+      //  A current order exists
       return data;
     })
     .then((data) => {
-      // console.log("data.rows[0].id", data.rows[0].id);
       const orderID = data.rows[0].id;
       templateVars.orderID = orderID;
       return userQueries.getOrders(orderID);
@@ -47,11 +41,11 @@ router.get('/', (req, res) => {
       return userQueries.getSubtotal(templateVars.orderID);
     })
     .then((data) => {
-      // if subtotal is undefined, display $0 subtotal
+      // If subtotal is undefined, display $0 subtotal
       if (!data) {
         templateVars.subtotal = 0;
       } else {
-        // iterate the array of data
+        // Iterate the array of data
         templateVars.subtotal = data.reduce((prev, curr) => {
           return Number(curr.subtotal) + prev;
         }, 0);
@@ -81,9 +75,9 @@ router.post('/submitOrder/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   userQueries.submitOrder(orderID)
     .then(() => {
-      //  Leave commented to save $$
       userQueries.getOwnerPhone()
         .then((phoneNumber) => {
+          //  Leave commented to save $$
           // client.messages
           //   .create({
           //     body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
@@ -101,7 +95,6 @@ router.post('/submitOrder/:orderID', (req, res) => {
 });
 
 router.post('/removeFoodItem/:orderID', (req, res) => {
-  // need orderID and the food_items.id
   const orderID = req.params.orderID;
   const foodItemName = req.body.foodItemName;
   userQueries.removeFoodItem(foodItemName, orderID)
@@ -113,9 +106,9 @@ router.post('/removeFoodItem/:orderID', (req, res) => {
     });
 });
 
+// ADJUST QUANTITY IN CART
 router.post('/updateQuantity/:orderID', (req, res) => {
   const newQuantity = req.body.quantity;
-  const orderID = req.params.orderID;
   const orderContentId = req.body.order_contents_id;
 
   userQueries.updateQuantity(newQuantity, orderContentId)
@@ -133,10 +126,6 @@ router.post('/:orderID', (req, res) => {
   const foodItemID = req.body.foodItemID;
   const quantity = req.body.quantity;
   const orderID = req.params.orderID;
-
-  // console.log("foodItemID", foodItemID);
-  // console.log("quantity", quantity);
-  // console.log("orderID", orderID);
 
   //  Check cart for existing entries of added item
   const searchCart = `
@@ -158,22 +147,17 @@ router.post('/:orderID', (req, res) => {
 
   db.query(searchCart, [orderID, foodItemID])
     .then((data) => {
-      // console.log(data.rows);
       if (data.rows.length === 0) {
-        // food item has no listings in current cart
-        // needs to be added in
+        // Food item not already in cart
         db.query(queryAddToCart, [orderID, foodItemID, quantity || 1])
           .then(() => res.redirect('/'));
       }
       if (data.rows.length > 0) {
-        // food item has a listing
-        // update quantity
+        // Food item already in cart
         db.query(queryUpdateCart, [quantity || 1, orderID, foodItemID])
           .then(() => res.redirect('/'));
       }
     });
-
-
 });
 
 module.exports = router;

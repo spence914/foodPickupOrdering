@@ -25,12 +25,10 @@ router.get('/', (req, res) => {
   db.query(queryCurrentOrder, [userID])
     .then((data) => {
       if (!data.rows[0]) {
-        //  no current order exists
-        // console.log("Creating new order");
-        return db.query(queryCreateNewOrder, [userID])
-        // .then(() => db.query(queryCurrentOrder, [userID])); // refetch new order
+        //  No current order exists
+        return db.query(queryCreateNewOrder, [userID]);
       }
-      //  current order exists
+      //  Current order exists
       return data;
     })
     .then((data) => {
@@ -38,7 +36,6 @@ router.get('/', (req, res) => {
 
       db.query(queryFoodItems)
         .then((foodItems) => {
-          // console.log("foodItems", foodItems);
           res.render('index', { foodItems: foodItems.rows, orderID });
         });
     });
