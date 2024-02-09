@@ -333,6 +333,39 @@ WHERE
     });
 };
 
+const queryCurrentOrder = (userID) => {
+  const queryCurrentOrder = `
+  SELECT * FROM orders
+  WHERE user_id = $1 AND created_at IS NOT NULL AND placed_at IS NULL
+  `;
+
+  return db.query(queryCurrentOrder, [userID])
+    .then((data) => {
+      return data.rows;
+    });
+
+};
+
+
+const createNewOrderQuery = (userID) => {
+
+  const queryCreateNewOrder = `
+  INSERT INTO orders (user_id) VALUES ($1)
+  RETURNING *;
+  `;
+  return db.query(queryCreateNewOrder, [userID])
+    .then((data) => {
+      return data.rows;
+    });
+};
+
+const queryAllFoodItems = () => {
+  const queryFoodItems = `
+  SELECT id, name, description, price, thumbnail_photo_url FROM food_items;
+  `;
+  return db.query(queryFoodItems);
+};
+
 module.exports = {
   getUsers,
   getAllFoodItems,
@@ -352,6 +385,9 @@ module.exports = {
   getOrdersAdmin,
   updateOrdersQuery,
   getUserPhone,
-  orderItemContentsQuery
+  orderItemContentsQuery,
+  queryCurrentOrder,
+  createNewOrderQuery,
+  queryAllFoodItems
 };
 
