@@ -36,7 +36,9 @@
               </div>
               <div class="editCart">
                 <form class="update-form" action="/cart/updateQuantity/<%= orderID %>" method="POST">
+                  <i class="quantity-btn fa-solid fa-minus"></i>
                   <input type="number" class="quantityAjax" id="quantity" name="quantity" value="<%= item.quantity %>" step="1" min="1"/>
+                  <i class="quantity-btn fa-solid fa-plus"></i>
                   <input type="hidden" name="order_contents_id" value="<%= item.order_contentsid %>"/>
                 </form>
                 <form class="removeItemAjax" action="/cart/removeFoodItem/<%= orderID%>" method="POST">
