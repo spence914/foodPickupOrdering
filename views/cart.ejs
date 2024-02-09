@@ -41,7 +41,7 @@
                   <i class="quantity-btn fa-solid fa-plus"></i>
                   <input type="hidden" name="order_contents_id" value="<%= item.order_contentsid %>"/>
                 </form>
-                <form class="removeItemAjax" action="/cart/removeFoodItem/<%= orderID%>" method="POST">
+                <form class="removeItemAjax" action="/api/users/removeFoodItem/<%= orderID%>" method="POST">
                   <input type="hidden" name="foodItemName" value="<%= item.name%>">
                   <button class="remove-btn" type="button">REMOVE</button>
                 </form>

@@ -47,9 +47,9 @@ $(document).ready(function() {
     $(this).closest(".removeItemAjax").trigger("submit");
     const $foodItem = $(this).closest('.foodItem');
     $foodItem.hide();
-    setTimeout(() => {
-      $("#subtotalTarget").load("/cart #subtotalTarget");
-    }, 100);
+    // setTimeout(() => {
+    //   $("#subtotalTarget").load("/cart #subtotalTarget");
+    // }, 100);
   });
 
   // REMOVE FOOD ITEM
@@ -62,8 +62,10 @@ $(document).ready(function() {
       type: "POST",
       url: postURL,
       data: values,
-      success: (res) => {
-        console.log("success");
+      success: (jsonData) => {
+        const currentSubtotal = jsonData.subtotal;
+        const replacementHtml = `<p><strong>SUBTOTAL : </strong>$ ${currentSubtotal}</p>`;
+        $("#subtotalTarget").empty().append(replacementHtml);
       }
     });
   });
