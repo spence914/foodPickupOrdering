@@ -1,6 +1,6 @@
 $(document).ready(function() {
   
-  // Client facing scripts here
+  // ADJUST QUANTITY BUILT IN ARROWS
   $('.quantityAjax').on("keyup keydown change", function() {
     $(".update-form").trigger("submit");
     $("#subtotalTarget").load("/cart #subtotalTarget");
@@ -15,12 +15,29 @@ $(document).ready(function() {
       type: "POST",
       url: postUrl,
       data: values,
-      success: (res) => {
+      success: () => {
         console.log("success");
       }
     });
-    
   });
+
+  // QUANITITY PLUS AND MINUS
+  $('.quantity-btn').on('click', function() {
+    if ($(this).hasClass('fa-plus')) {
+      const addValue = parseInt($(this).parent().find('.quantityAjax').val()) + 1;
+      $(this).parent().find('.quantityAjax').val(addValue).trigger('change');
+    }
+  
+    if ($(this).hasClass('fa-minus')) {
+      let removeValue = parseInt($(this).parent().find('.quantityAjax').val()) - 1;
+      if (removeValue === 0) {
+        removeValue = 1;
+      }
+      $(this).parent().find('.quantityAjax').val(removeValue).trigger('change');
+    }
+  
+  });
+
 
   $('.remove-btn').on('click', function() {
     $(this).closest(".removeItemAjax").trigger("submit");
@@ -29,7 +46,7 @@ $(document).ready(function() {
     $("#subtotalTarget").load("/cart #subtotalTarget");
   });
 
-  // Remove foodItem
+  // REMOVE FOOD ITEM
   $('.removeItemAjax').submit(function(e) {
     e.preventDefault();
     const postURL = $(this).attr("action");
