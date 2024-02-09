@@ -110,9 +110,11 @@ router.post('/admin/time', (req, res) => {
           })
           .catch((err) => console.log(err));
       }, timeToComplete * 60000);
+    })
+    .then(() => {
+      res.redirect('/orders');
     });
 
-  res.redirect('/orders');
 });
 
 module.exports = router;

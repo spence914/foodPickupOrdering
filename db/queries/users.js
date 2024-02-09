@@ -271,22 +271,43 @@ ORDER BY orders.created_at DESC;`;
 };
 
 const getOrdersAdmin = () => {
-  const queryString = `SELECT
-    orders.id,
-    orders.created_at,
-    orders.status,
-    SUM(order_contents.quantity * food_items.price) AS total_price
-  FROM
-    orders
-  JOIN
-    order_contents ON orders.id = order_contents.order_id
-  JOIN
-    food_items ON food_items.id = order_contents.food_item_id
-  WHERE
-    orders.status <> 'completed'
-  GROUP BY
-    orders.id
-  ORDER BY orders.created_at DESC;`;
+  const queryString = `
+  (
+    SELECT
+      orders.id,
+      orders.created_at,
+      orders.status,
+      SUM(order_contents.quantity * food_items.price) AS total_price
+    FROM
+      orders
+    JOIN
+      order_contents ON orders.id = order_contents.order_id
+    JOIN
+      food_items ON food_items.id = order_contents.food_item_id
+    WHERE
+      orders.status <> 'In Progress'
+    GROUP BY
+      orders.id
+    ORDER BY orders.created_at DESC
+  ) UNION (
+    SELECT
+      orders.id,
+      orders.created_at,
+      orders.status,
+      SUM(order_contents.quantity * food_items.price) AS total_price
+    FROM
+      orders
+    JOIN
+      order_contents ON orders.id = order_contents.order_id
+    JOIN
+      food_items ON food_items.id = order_contents.food_item_id
+    WHERE
+      orders.status <> 'Completed'
+    GROUP BY
+      orders.id
+    ORDER BY orders.created_at DESC
+  )
+  `;
 
   return db.query(queryString)
     .then((data) => {
@@ -295,7 +316,7 @@ const getOrdersAdmin = () => {
 };
 
 const updateOrdersQuery = (timeToComplete, orderID) => {
-  const queryString = `UPDATE orders SET status = 'completed', time_to_complete = $1 WHERE id = $2`;
+  const queryString = `UPDATE orders SET status = 'Completed', time_to_complete = $1 WHERE id = $2`;
 
   return db.query(queryString, [timeToComplete, orderID])
     .then((data) => {
