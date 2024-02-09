@@ -58,14 +58,17 @@ router.post('/submitOrder/:orderID', (req, res) => {
       userQueries.getOwnerPhone()
         .then((phoneNumber) => {
           //  Leave commented to save $$
-          // client.messages
-          //   .create({
-          //     body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
-          //     to: phoneNumber, // Text your number
-          //     from: '+14085604628', // From a valid Twilio number
-          //   })
-          //   .then((message) => console.log(message.sid))
-          //   .catch((err) => console.log(err));
+          client.messages
+            .create({
+              body: `Hello, there is a new online order: ${orderID}, please check Food Delivery App for details.`,
+              to: phoneNumber, // Text your number
+              from: '+14085604628', // From a valid Twilio number
+            })
+            .then((message) => {
+              console.log(message.sid);
+              console.log(message.body);
+            })
+            .catch((err) => console.log(err));
           res.redirect('/orders');
         });
     })
@@ -111,7 +114,6 @@ router.post('/:orderID', (req, res) => {
 
   userQueries.searchCart(orderID, foodItemID)
     .then((data) => {
-      console.log(data);
       if (data.length === 0) {
         // Food item not already in cart
         userQueries.addToCart(orderID, foodItemID, quantity)

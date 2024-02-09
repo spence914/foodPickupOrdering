@@ -5,7 +5,7 @@ $(document).ready(function() {
     $(".update-form").trigger("submit");
     setTimeout(() => {
       $("#subtotalTarget").load("/cart #subtotalTarget");
-    }, 5);
+    }, 100);
   });
   
   $('.update-form').submit(function(e) {
@@ -47,7 +47,7 @@ $(document).ready(function() {
     $foodItem.hide();
     setTimeout(() => {
       $("#subtotalTarget").load("/cart #subtotalTarget");
-    }, 5);
+    }, 100);
   });
 
   // REMOVE FOOD ITEM

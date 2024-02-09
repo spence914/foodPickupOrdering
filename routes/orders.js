@@ -99,7 +99,10 @@ router.post('/admin/time', (req, res) => {
           to: userPhone, // Text your number
           from: '+14085604628', // From a valid Twilio number
         })
-        .then((message) => console.log(message.sid))
+        .then((message) => {
+          console.log(message.sid);
+          console.log(message.body);
+        })
         .catch((err) => console.log(err));
       setTimeout(() => {
         client.messages
@@ -108,8 +111,9 @@ router.post('/admin/time', (req, res) => {
             to: userPhone, // Text your number
             from: '+14085604628', // From a valid Twilio number
           })
+          .then((message) => console.log(message.body))
           .catch((err) => console.log(err));
-      }, timeToComplete * 60000);
+      }, timeToComplete * 1000);
     })
     .then(() => {
       res.redirect('/orders');
