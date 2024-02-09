@@ -1,24 +1,26 @@
 $(document).ready(function() {
-  
+
   // ADJUST QUANTITY BUILT IN ARROWS
   $('.quantityAjax').on("keyup keydown change", function() {
     $(".update-form").trigger("submit");
-    setTimeout(() => {
-      $("#subtotalTarget").load("/cart #subtotalTarget");
-    }, 100);
+    // setTimeout(() => {
+    //   $("#subtotalTarget").load("/cart #subtotalTarget");
+    // }, 100);
   });
-  
+
   $('.update-form').submit(function(e) {
     e.preventDefault();
     const postUrl = $(this).attr("action");
     const values = $(this).serialize();
-    
+
     $.ajax({
       type: "POST",
       url: postUrl,
       data: values,
-      success: () => {
-        console.log("success");
+      success: (jsonData) => {
+        const currentSubtotal = jsonData.subtotal;
+        const replacementHtml = `<p><strong>SUBTOTAL : </strong>$ ${currentSubtotal}</p>`;
+        $("#subtotalTarget").empty().append(replacementHtml);
       }
     });
   });
@@ -29,7 +31,7 @@ $(document).ready(function() {
       const addValue = parseInt($(this).parent().find('.quantityAjax').val()) + 1;
       $(this).parent().find('.quantityAjax').val(addValue).trigger('change');
     }
-  
+
     if ($(this).hasClass('fa-minus')) {
       let removeValue = parseInt($(this).parent().find('.quantityAjax').val()) - 1;
       if (removeValue === 0) {
@@ -37,7 +39,7 @@ $(document).ready(function() {
       }
       $(this).parent().find('.quantityAjax').val(removeValue).trigger('change');
     }
-  
+
   });
 
 
