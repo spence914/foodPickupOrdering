@@ -7,5 +7,5 @@ CREATE TABLE orders (
   created_at TIMESTAMP DEFAULT NOW(),
   placed_at TIMESTAMP DEFAULT NULL,
   time_to_complete INT DEFAULT NULL,
-  status VARCHAR(255) DEFAULT 'In Progress'
+  status VARCHAR(255) DEFAULT NULL
 );
