@@ -99,7 +99,7 @@ const getOrderHistory = (userID) => {
 const submitOrder = (orderID) => {
   const queryString = `
     UPDATE orders
-    SET placed_at = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
+    SET placed_at = CURRENT_TIMESTAMP AT TIME ZONE 'UTC', status = 'In Progress'
     WHERE id = $1
     AND placed_at IS NULL
     RETURNING *;
@@ -271,42 +271,23 @@ ORDER BY orders.created_at DESC;`;
 };
 
 const getOrdersAdmin = () => {
-  const queryString = `
-  (
-    SELECT
-      orders.id,
-      orders.created_at,
-      orders.status,
-      SUM(order_contents.quantity * food_items.price) AS total_price
-    FROM
-      orders
-    JOIN
-      order_contents ON orders.id = order_contents.order_id
-    JOIN
-      food_items ON food_items.id = order_contents.food_item_id
-    WHERE
-      orders.status <> 'In Progress'
-    GROUP BY
-      orders.id
-    ORDER BY orders.created_at DESC
-  ) UNION (
-    SELECT
-      orders.id,
-      orders.created_at,
-      orders.status,
-      SUM(order_contents.quantity * food_items.price) AS total_price
-    FROM
-      orders
-    JOIN
-      order_contents ON orders.id = order_contents.order_id
-    JOIN
-      food_items ON food_items.id = order_contents.food_item_id
-    WHERE
-      orders.status <> 'Completed'
-    GROUP BY
-      orders.id
-    ORDER BY orders.created_at DESC
-  )
+  const queryString = `  
+  SELECT
+    orders.id,
+    orders.created_at,
+    orders.status,
+    SUM(order_contents.quantity * food_items.price) AS total_price
+  FROM
+    orders
+  JOIN
+    order_contents ON orders.id = order_contents.order_id
+  JOIN
+    food_items ON food_items.id = order_contents.food_item_id
+  WHERE
+    orders.status = 'In Progress' OR orders.status = 'Completed'
+  GROUP BY
+    orders.id
+  ORDER BY orders.status DESC, orders.created_at DESC
   `;
 
   return db.query(queryString)
