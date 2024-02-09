@@ -1,7 +1,7 @@
 @use 'fonts';
 
 p { margin: 0 }
-ul { 
+ul {
   margin: 0px;
   margin-bottom: 10px;
 }
@@ -108,6 +108,10 @@ body {
 
     background-color: rgb(235, 235, 235);
   }
+
+  i:hover {
+    cursor: pointer;
+  }
 }
 
 .allUsersOrders {
@@ -135,6 +139,13 @@ button:hover {
   cursor: pointer;
 }
 
+button:active {
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
 #foodDisplay {
   display: flex;
   flex-direction: row;
@@ -145,7 +156,7 @@ button:hover {
 
 #foodInformation {
   padding-left: 10px;
-  
+
   p {
     margin: 10px;
   }
@@ -188,7 +199,7 @@ button:hover {
     display: flex;
     flex-direction: row;
   }
-  
+
   p {
     margin: 2px;
     padding-left: 30px;
