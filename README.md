@@ -64,4 +64,4 @@ After the specified time has elapsed a second text message will be sent to the c
 ## Credits
 This project was made in collaboration with:
 [Cody Lau](https://github.com/laucodx45)
-[Spencer Lewis](https://github.com/spence914)
+[Phil Teigne](https://github.com/philteigne)
